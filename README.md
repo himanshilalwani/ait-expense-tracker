@@ -125,7 +125,5 @@ An Example Wallet:
 
 ## Annotations / References Used
 
-(__TODO__: list any tutorials/references/etc. that you've based your code off of)
-
 1. [tutorial on vue.js](https://vuejs.org/v2/guide/) - (add link to source code that was based on this)
 
