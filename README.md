@@ -96,7 +96,7 @@ An Example Wallet:
 
 ## Site map
 
-(documentation/sitemap.png)
+![](documentation/sitemap.png)
 
 ## User Stories or Use Cases
 
