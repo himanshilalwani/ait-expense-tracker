@@ -1,90 +1,113 @@
-The content below is an example project proposal / requirements document. Replace the text below the lines marked "__TODO__" with details specific to your project. Remove the "TODO" lines.
-
-(__TODO__: your project name)
-
-# Shoppy Shoperson 
+# Money Tracker 
 
 ## Overview
 
-(__TODO__: a brief one or two paragraph, high-level description of your project)
+Having to track your expenses on a regular basis is indeed a very boring task. However, the mundanity associated with it cannot overpower its siignificance.
 
-Remembering what to buy at the grocery store is waaaaay too difficult. Also, shopping for groceries when you're hungry leads to regrettable purchases. Sooo... that's where Shoppy Shoperson comes in!
+Money Tracker is a web app that helps you stay involved with your finances. It lets you create different budgets, log expenses in different categories, get a monthly spending report, amongst other useful features.
 
-Shoppy Shoperson is a web app that will allow users to keep track of multiple grocery lists. Users can register and login. Once they're logged in, they can create or view their grocery list. For every list that they have, they can add items to the list or cross off items.
+Be aware of where your money goes, identify and eliminate wasteful spending habits, and get in control of your expenses with Money Tracker!
 
 
 ## Data Model
 
-(__TODO__: a description of your application's data and their relationships to each other) 
+The application will store Users, Budgets, Expenses, Wallets, and Categories
 
-The application will store Users, Lists and Items
-
-* users can have multiple lists (via references)
-* each list can have multiple items (by embedding)
-
-(__TODO__: sample documents)
+* users can have multiple wallets, budgets, and categories (via references).
+* users can track their expenses in different categories and compare them with the set budget (via embedding and references).
 
 An Example User:
 
 ```javascript
 {
-  username: "shannonshopper",
+  username: "moneylover",
   hash: // a password hash,
-  lists: // an array of references to List documents
+  currency: "$",
+  budget: 1, // reference to a budget object
+  expenses: 25, // reference to an expense object
+  wallets: 10 // reference to a wallet object
 }
 ```
 
-An Example List with Embedded Items:
+An Example Budget:
 
 ```javascript
 {
-  user: // a reference to a User object
-  name: "Breakfast foods",
-  items: [
-    { name: "pancakes", quantity: "9876", checked: false},
-    { name: "ramen", quantity: "2", checked: true},
-  ],
-  createdAt: // timestamp
+  _id: 1,
+  budgets: [{ budgetName: "Thanksgiving Trip", 
+  setCategories: { transport: "100", food: "200", accommodation: "300"} 
+  }]
+}
+```
+An Example List of Expenses:
+
+```javascript
+{
+  _id: 25,
+  recent: { transport: 20, food: 10 }
+  dailyExpenses: [
+    { date: , spent: {}}
+  ]
+  budgetExpenses: [
+    { budgetName: "Default", spent: { transport: "200", food: "500", accommodation: "150", education: "100", groceries: "50" } }, // default to track overall expenses 
+    { budgetName: "Thanksgiving Trip", spent: { transport: "50", food: "30", accommodation: "90"} }
+  ]  
+}
+
+```
+An Example Wallet:
+
+```javascript
+{
+  id: 10,
+  wallets: { cash: "600", chaseCard: "700", citiBank: "200" }
 }
 ```
 
-
 ## [Link to Commented First Draft Schema](db.mjs) 
 
-(__TODO__: create a first draft of your Schemas in db.mjs and link to it)
 
 ## Wireframes
 
-(__TODO__: wireframes for all of the pages on your site; they can be as simple as photos of drawings or you can use a tool like Balsamiq, Omnigraffle, etc.)
+/ - web app home page / public page
 
-/list/create - page for creating a new shopping list
+![list create](documentation/public.png)
 
-![list create](documentation/list-create.png)
+/login - login page for existing users
 
-/list - page for showing all shopping lists
+![list](documentation/login.png)
 
-![list](documentation/list.png)
+/signup - sign up page for new users
 
-/list/slug - page for showing specific shopping list
+![list](documentation/sign-up.png)
 
-![list](documentation/list-slug.png)
+/home - home page that opens as soon as a user logs in
+
+![list](documentation/home.png)
+
+/budget - budgets page to create a budget and track expenses for that budget
+
+![list](documentation/budget.png)
+
+/expenses - expenses page to check expenses for a day and see the visualization
+
+![list](documentation/expenses.png)
+
 
 ## Site map
 
-(__TODO__: draw out a site map that shows how pages are related to each other)
-
-Here's a [complex example from wikipedia](https://upload.wikimedia.org/wikipedia/commons/2/20/Sitemap_google.jpg), but you can create one without the screenshots, drop shadows, etc. ... just names of pages and where they flow to.
+(documentation/sitemap.png)
 
 ## User Stories or Use Cases
 
-(__TODO__: write out how your application will be used through [user stories](http://en.wikipedia.org/wiki/User_story#Format) and / or [use cases](https://en.wikipedia.org/wiki/Use_case))
-
 1. as non-registered user, I can register a new account with the site
 2. as a user, I can log in to the site
-3. as a user, I can create a new grocery list
-4. as a user, I can view all of the grocery lists I've created in a single list
-5. as a user, I can add items to an existing grocery list
-6. as a user, I can cross off items in an existing grocery list
+3. as a user, I can create a budget
+4. as a user, I can log an expense
+5. as a user, I can see a daily spending report
+6. as a user, I can create a custom category to track my expenses
+7. as a user, I can add a wallet
+8. as a user, I can see my recent expenses
 
 ## Research Topics
 
@@ -105,8 +128,6 @@ Here's a [complex example from wikipedia](https://upload.wikimedia.org/wikipedia
 
 
 ## [Link to Initial Main Project File](app.mjs) 
-
-(__TODO__: create a skeleton Express application with a package.json, app.mjs, views folder, etc. ... and link to your initial app.mjs)
 
 ## Annotations / References Used
 

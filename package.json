@@ -1,0 +1,23 @@
+{
+  "name": "final-project-himanshilalwani",
+  "version": "1.0.0",
+  "description": "## Overview",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nyu-csci-ua-0467-001-002-fall-2022/final-project-himanshilalwani.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nyu-csci-ua-0467-001-002-fall-2022/final-project-himanshilalwani/issues"
+  },
+  "homepage": "https://github.com/nyu-csci-ua-0467-001-002-fall-2022/final-project-himanshilalwani#readme",
+  "dependencies": {
+    "mongoose": "^6.6.7",
+    "mongoose-url-slugs": "^1.0.2"
+  }
+}
