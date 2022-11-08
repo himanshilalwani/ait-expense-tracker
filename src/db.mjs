@@ -24,16 +24,24 @@ const WalletSchema = new mongoose.Schema({
 const UserSchema = new mongoose.Schema({
     email: { type: String, required: true },
     password: { type: String },
+    isVerified: { type: Boolean, default: false },
     currency: String,
     budget: { type: mongoose.Schema.Types.ObjectId, ref: 'Budgets' }, // reference to a budget object
     expenses: { type: mongoose.Schema.Types.ObjectId, ref: 'Expenses' }, // reference to an expense object
     wallets: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Wallets' }] // reference to a wallet object
 })
 
+const tokenSchema = new mongoose.Schema({
+    _userId: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'Users' },
+    token: { type: String, required: true },
+    expireAt: { type: Date, default: Date.now, index: { expires: 86400000 } }
+});
+
 mongoose.model('Users', UserSchema);
 mongoose.model('Budgets', BudgetSchema);
 mongoose.model('Expenses', ExpenseSchema);
 mongoose.model('Wallets', WalletSchema);
+mongoose.model('Tokens', tokenSchema);
 
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 let dbconf;

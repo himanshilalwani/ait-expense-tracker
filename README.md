@@ -128,5 +128,5 @@ An Example Wallet:
 
 1. [tutorial on mocha](https://www.geeksforgeeks.org/how-to-use-mocha-with-mongoose/)
 2. [tutorial on tailwind](https://tailwindcss.com/docs/installation)
-3. [tutorial on sending verification email](https://www.section.io/engineering-education/email-authentication-and-verification-nodejs-firebase/)
+3. [tutorial on sending verification email](https://slgupta022.medium.com/email-verification-using-sendgrid-in-node-js-express-js-mongodb-c5803f643e09)
 
