@@ -1,0 +1,20 @@
+<h2>Your Wallets</h2>
+{{#if error}}
+<div class="no-wallets">You do not have any wallets added. Add them <a href="/wallet/add">here</a></div>
+
+{{else}}
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Amount</th>
+    </tr>
+    {{#each wallets as |w|}}
+    <tr>
+        <td>{{name}}</td>
+        <td>{{amount}}</td>
+    </tr>
+    {{/each}}
+
+</table>
+<div>Wanna add more? Click <a href="/wallet/add">here</a></div>
+{{/if}}

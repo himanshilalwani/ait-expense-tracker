@@ -34,10 +34,22 @@ app.post('/wallet/add', (req, res) => {
     newWallet.save((err, savedWallet) => {
         if (savedWallet) {
             console.log(savedWallet);
-            res.render('add-wallet');
+            res.redirect('/home')
         }
         else {
             console.log(err);
+            res.render('add-wallet', { message: "Try Again!" });
+        }
+    })
+})
+
+app.get('/home', (req, res) => {
+    Wallet.find({}).exec((err, wallets) => {
+        if (wallets.length === 0) {
+            res.render('home', { error: true })
+        }
+        else {
+            res.render('home', { error: false, wallets: wallets })
         }
     })
 })
