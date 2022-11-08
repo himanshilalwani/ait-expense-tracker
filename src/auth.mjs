@@ -27,7 +27,7 @@ const endAuthenticatedSession = (req, cb) => {
     req.session.destroy((err) => { cb(err); });
 };
 
-
+// https://slgupta022.medium.com/email-verification-using-sendgrid-in-node-js-express-js-mongodb-c5803f643e09
 const signup = (req, res, next) => {
     User.findOne({ email: req.body.email }, function (err, user) {
         // error occurs
