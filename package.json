@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/nyu-csci-ua-0467-001-002-fall-2022/final-project-himanshilalwani#readme",
   "dependencies": {
+    "dotenv": "^16.0.3",
     "mongoose": "^6.6.7",
     "mongoose-url-slugs": "^1.0.2"
   }
