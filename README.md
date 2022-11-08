@@ -116,7 +116,7 @@ An Example Wallet:
     * Option 1: Google OAuth
     * Option 2: Sending verification email
 * (4 points) vue.js
-    * I will vue.js as the frontend framework; it's a challenging library to learn, so I've assigned it 4 points
+    * I will use vue.js as the frontend framework; it's a challenging library to learn, so I've assigned it 4 points
 
 9 points total out of 8 required points
 
@@ -127,5 +127,5 @@ An Example Wallet:
 
 (__TODO__: list any tutorials/references/etc. that you've based your code off of)
 
-1. [tutorial on vue.js](https://vuejs.org/v2/guide/) - (add link to source code that was based on this)
+1. [tutorial on vue.js](https://vuejs.org/v2/guide/)
 
