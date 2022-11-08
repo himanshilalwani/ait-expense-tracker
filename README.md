@@ -20,12 +20,12 @@ An Example User:
 
 ```javascript
 {
-  username: "moneylover",
+  email: "moneylover@xyz.com",
   hash: // a password hash,
   currency: "$",
   budget: 1, // reference to a budget object
   expenses: 25, // reference to an expense object
-  wallets: 10 // reference to a wallet object
+  wallets: [10] // reference to a wallet object
 }
 ```
 
@@ -60,7 +60,7 @@ An Example Wallet:
 ```javascript
 {
   id: 10,
-  wallets: { cash: "600", chaseCard: "700", citiBank: "200" }
+  cash: "600"
 }
 ```
 
@@ -112,20 +112,21 @@ An Example Wallet:
 ## Research Topics
 
 * (5 points) Integrate user authentication
-    * I have two options in mind currently, will choose one based on the difficulty level
-    * Option 1: Google OAuth
-    * Option 2: Sending verification email
-* (4 points) vue.js
-    * I will use vue.js as the frontend framework; it's a challenging library to learn, so I've assigned it 4 points
+    * Send a verification email to user on signing up
+* (2 points) CSS Framework
+    * I will use tailwind or bootstrap
+* (2 points) Unit Testing
+    * I will use Mocha for unit testing of features such as login.
+* (2 points) Perform client side form validation using custom JavaScript
 
-9 points total out of 8 required points
+11 points total out of 10 required points
 
 
 ## [Link to Initial Main Project File](app.mjs) 
 
 ## Annotations / References Used
 
-(__TODO__: list any tutorials/references/etc. that you've based your code off of)
-
-1. [tutorial on vue.js](https://vuejs.org/v2/guide/)
+1. [tutorial on mocha](https://www.geeksforgeeks.org/how-to-use-mocha-with-mongoose/)
+2. [tutorial on tailwind](https://tailwindcss.com/docs/installation)
+3. [tutorial on sending verification email](https://www.section.io/engineering-education/email-authentication-and-verification-nodejs-firebase/)
 
