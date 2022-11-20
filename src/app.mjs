@@ -24,6 +24,9 @@ app.use(express.urlencoded({ extended: false }));
 app.get('/', (req, res) => {
     res.render('login');
 })
+app.get('/sign-up', (req, res) => {
+    res.render('signup');
+})
 app.get('/wallet/add', (req, res) => {
     res.render('add-wallet');
 })
