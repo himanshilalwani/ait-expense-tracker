@@ -2,6 +2,7 @@ import bcrypt from 'bcryptjs';
 import mongoose from 'mongoose';
 import crypto from 'crypto';
 import nodemailer from 'nodemailer';
+import * as sendgridTransport from 'nodemailer-sendgrid-transport';
 import './db.mjs';
 // assumes that User was registered in `./db.mjs`
 const User = mongoose.model('Users');

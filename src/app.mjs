@@ -12,7 +12,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 app.use(express.static(path.join(__dirname, 'public')));
-
+// console.log(path.join(__dirname, 'public'));
 app.use(express.urlencoded({ extended: false }));
 
 // app.use(session({
@@ -21,6 +21,9 @@ app.use(express.urlencoded({ extended: false }));
 //     saveUninitialized: true,
 // }));
 
+app.get('/', (req, res) => {
+    res.render('login');
+})
 app.get('/wallet/add', (req, res) => {
     res.render('add-wallet');
 })
