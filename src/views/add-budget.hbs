@@ -1,0 +1,44 @@
+<script>
+    function add() {
+        let i = 1;
+        const original = document.getElementsByClassName('category')[0];
+
+        let clone = original.cloneNode(true);
+        clone.style.display = 'block';
+        clone.className = "category";
+        clone.querySelector(".amount").value = "";
+        clone.querySelector(".categories-list").value = "";
+        original.parentNode.appendChild(clone);
+    }
+</script>
+<h1>Create a Budget</h1>
+<form action="" method="post" id="expense">
+    <div>
+        <div id="data">
+            <label for="name">Budget Name: </label>
+            <input type="text" id="name" name="name" value="">
+            <br>
+            <div class="category">
+                <label for="amount">Category: </label>
+                <input type="text" list="categories" class="categories-list">
+                <datalist id="categories">
+                    <option>Accommodation</option>
+                    <option>Transportation</option>
+                    <option>Food</option>
+                </datalist>
+                <label for="amount">Amount: </label>
+                <input type="number" name="amount" class="amount">
+                <span onclick="this.parentElement.style.display = 'none';" class="closebtn">Delete</span>
+
+            </div>
+        </div>
+        <span onclick="add()" class="addbtn">Add</span>
+
+    </div>
+
+    <button type="submit">Submit</button>
+</form>
+{{#if message}}
+<div style="color: green;">{{message}}</div>
+{{/if}}
+{{!-- <div>View your budgets <a href="/home">here</a></div> --}}

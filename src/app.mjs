@@ -31,6 +31,10 @@ app.get('/wallet/add', (req, res) => {
     res.render('add-wallet');
 })
 
+app.get('/budget/add', (req, res) => {
+    res.render('add-budget');
+})
+
 app.post('/wallet/add', (req, res) => {
     const newWallet = new Wallet({
         name: req.body.name,
