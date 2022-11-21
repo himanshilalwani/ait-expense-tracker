@@ -1,0 +1,21 @@
+<h2>Your Budgets</h2>
+{{#if error}}
+<div class="no-budgets">You do not have any budgets created. Add them <a href="/budget/add">here</a></div>
+
+{{else}}
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Categories</th>
+    </tr>
+    {{#each budgets as |b|}}
+    <tr>
+        <td>{{name}}</td>
+        <td>{{categories}}</td>
+    </tr>
+    {{/each}}
+
+</table>
+
+<div>Wanna add more? Click <a href="/budget/add">here</a></div>
+{{/if}}

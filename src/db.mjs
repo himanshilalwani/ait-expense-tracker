@@ -5,7 +5,8 @@ import url from 'url';
 
 // budgets
 const BudgetSchema = new mongoose.Schema({
-    budgets: Array,
+    name: { type: String, required: true },
+    categories: { type: Object, required: true }
 })
 
 // expenses
@@ -26,7 +27,7 @@ const UserSchema = new mongoose.Schema({
     password: { type: String },
     isVerified: { type: Boolean, default: false },
     currency: String,
-    budget: { type: mongoose.Schema.Types.ObjectId, ref: 'Budgets' }, // reference to a budget object
+    budget: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Budgets' }], // reference to a budget object
     expenses: { type: mongoose.Schema.Types.ObjectId, ref: 'Expenses' }, // reference to an expense object
     wallets: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Wallets' }] // reference to a wallet object
 })
