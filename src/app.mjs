@@ -30,8 +30,9 @@ app.use(session({
 }));
 
 // require authenticated user for /wallet/add path
-app.use(auth.authRequired(['/wallet/add']));
+app.use(auth.authRequired(['/add-wallet']));
 app.use(auth.authRequired(['/budget/add']));
+app.use(auth.authRequired(['/home']));
 
 // make {{user}} variable available for all paths
 app.use((req, res, next) => {
@@ -145,6 +146,30 @@ app.get('/confirmation/:email/:token', (req, res) => {
     )
 })
 
+app.post('/confirmation/:email/:token', (req, res) => {
+    User.findOne(
+        { email: req.body.email }, function (err, user) {
+            if (err) {
+                res.render('login', { 'unexpected': 'Sorry :( An unexpected error occur. Please try again.' });
+            }
+            else if (!user || !bcrypt.compareSync(req.body.password, user.password)) {
+                res.render('login', { 'Incorrect': 'Email and Password do not match' });
+            }
+            else if (!user.isVerified) {
+                res.render('login', { 'Unverified': 'Please verify your account first' });
+            }
+            else {
+                auth.startAuthenticatedSession(req, user, (err) => {
+                    if (!err) {
+                        res.redirect('/home');
+                    } else {
+                        res.render('login', { 'unexpected': 'Sorry :( An unexpected error occur. Please try again.' })
+                    }
+                })
+            }
+        }
+    )
+})
 app.post('/', (req, res) => {
     User.findOne(
         { email: req.body.email }, function (err, user) {
@@ -169,9 +194,26 @@ app.post('/', (req, res) => {
         }
     )
 })
-app.get('/wallet/add', (req, res) => {
-    res.render('add-wallet');
-})
+
+app.post('/add-wallet', (req, res) => {
+    User.
+        findOne({ _id: req.session.user._id }).
+        populate('wallets').
+        exec(function (err, wallets) {
+            if (err) {
+                console.log(err);
+            }
+            if (wallets) {
+                const userWallets = wallets['wallets'];
+                const filteredWallets = userWallets.map(wallet => {
+                    return { 'name': wallet.name, 'amount': wallet.amount };
+                })
+                // console.log(filteredWallets);
+                res.render('add-wallet', { wallet: filteredWallets });
+            }
+        })
+}
+)
 
 app.get('/budget/add', (req, res) => {
     res.render('add-budget');
@@ -210,49 +252,113 @@ app.post('/budget/add', (req, res) => {
 
 })
 
-app.post('/wallet/add', (req, res) => {
-    const newWallet = new Wallet({
-        name: req.body.name,
-        amount: req.body.amount
-    });
+// async function checkForExistingNames(userID, name) {
+//     User.findOne({ _id: userID }, function (err, user) {
+//         if (user) {
+//             for (const walletID of user.wallets) {
+//                 console.log(walletID);
+//                 Wallet.findOne({ _id: walletID }, function (err, wallet) {
+//                     if (wallet) {
+//                         if (wallet.name === req.body.name) {
+//                             console.log('returning true')
+//                             return true;
+//                         }
+//                     }
+//                 })
+//             }
+//         }
+//         console.log('returning false')
+//         return false;
+//     })
+// }
+app.post('/home', function (req, res) {
+    // const flag = await checkForExistingNames(req.session.user._id, req.body.name);
+    // console.log(flag);
+    // if (flag == false) {
+    // console.log('trying to save!!');
+    User.findOne({ _id: req.session.user._id }, function (err, user) {
+        if (user) {
+            const newWallet = new Wallet({
+                name: req.body.name,
+                amount: req.body.amount
+            });
+            newWallet.save((err, savedWallet) => {
+                if (savedWallet) {
+                    console.log(savedWallet);
+                    user.wallets.push(savedWallet._id);
+                    user.save((err, savedUser) => {
+                        if (savedUser) {
+                            res.redirect('/home')
+                        }
+                        else {
+                            console.log(err);
+                            // window.alert('Some error occurred! Please try again!')
+                            res.redirect('/home');
 
-    newWallet.save((err, savedWallet) => {
-        if (savedWallet) {
-            console.log(savedWallet);
-            res.redirect('/home')
-        }
-        else {
-            console.log(err);
-            res.render('add-wallet', { message: "Try Again!" });
+                        }
+                    })
+
+                }
+                else {
+                    console.log(err)
+                    res.redirect('/home');
+                }
+            })
         }
     })
+
+
+
 })
 
 app.get('/home', (req, res) => {
-    Wallet.find({}).exec((err, wallets) => {
-        if (wallets.length === 0) {
-            res.render('home', { error: true })
-        }
-        else {
-            res.render('home', { error: false, wallets: wallets })
-        }
-    })
+    User.
+        findOne({ _id: req.session.user._id }).
+        populate('wallets').
+        exec(function (err, wallets) {
+            if (err) {
+                console.log(err);
+            }
+            if (wallets) {
+                const userWallets = wallets['wallets'];
+                const filteredWallets = userWallets.map(wallet => {
+                    return { 'name': wallet.name, 'amount': wallet.amount };
+                })
+                // console.log(filteredWallets);
+                res.render('home', { wallet: filteredWallets });
+            }
+        })
+
+
 })
 
+
+// Wallet.find({}).exec((err, wallets) => {
+//     if (wallets.length === 0) {
+//         res.render('home', { error: true })
+//     }
+//     else {
+//         res.render('home', { error: false, wallets: wallets })
+//     }
+// })
+
+
 app.get('/budgets', (req, res) => {
-    Budget.find({}).exec((err, budgets) => {
-        if (budgets.length === 0) {
-            res.render('budgets', { error: true })
-        }
-        else {
-            const newBudget = JSON.parse(JSON.stringify(budgets));
-            // console.log(JSON.stringify(newBudget));
-            newBudget.forEach((budget) => {
-                budget['categories'] = JSON.stringify(budget['categories']);
-            })
-            res.render('budgets', { error: false, budgets: newBudget })
-        }
-    })
+    document.alert('OOPS')
+    res.redirect('/home')
+    // Budget.find({}).exec((err, budgets) => {
+    //     if (budgets.length === 0) {
+    //         res.render('budgets', { error: true })
+    //     }
+    //     else {
+    //         const newBudget = JSON.parse(JSON.stringify(budgets));
+    //         // console.log(JSON.stringify(newBudget));
+    //         newBudget.forEach((budget) => {
+    //             budget['categories'] = JSON.stringify(budget['categories']);
+    //         })
+    //         res.render('budgets', { error: false, budgets: newBudget })
+    //     }
+    // })
 })
 
 app.listen(process.env.PORT || 3000);
