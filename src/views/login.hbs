@@ -70,10 +70,28 @@
                 {{alreadyVerified}}
             </p>
             {{else}}
+            {{#if unexpected}}
+            <p class="mt-2 text-center text-sm text-gray-600">
+                {{unexpected}}
+            </p>
+            {{else}}
+            {{#if Incorrect}}
+            <p class="mt-2 text-center text-sm text-gray-600">
+                {{Incorrect}}
+            </p>
+            {{else}}
+            {{#if Unverified}}
+            <p class="mt-2 text-center text-sm text-gray-600">
+                {{Unverified}}
+            </p>
+            {{else}}
             <p class="mt-2 text-center text-sm text-gray-600">
                 Don't have an account?
                 <a href="sign-up" class="font-medium text-indigo-600 hover:text-indigo-500">Sign up here</a>
             </p>
+            {{/if}}
+            {{/if}}
+            {{/if}}
             {{/if}}
             {{/if}}
         </div>

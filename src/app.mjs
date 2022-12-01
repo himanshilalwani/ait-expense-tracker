@@ -134,6 +134,24 @@ app.get('/confirmation/:email/:token', (req, res) => {
     )
 })
 
+app.post('/', (req, res) => {
+    User.findOne(
+        { email: req.body.email }, function (err, user) {
+            if (err) {
+                res.render('login', { 'unexpected': 'Sorry :( An unexpected error occur. Please try again.' });
+            }
+            else if (!user || !bcrypt.compareSync(req.body.password, user.password)) {
+                res.render('login', { 'Incorrect': 'Email and Password do not match' });
+            }
+            else if (!user.isVerified) {
+                res.render('login', { 'Unverified': 'Please verify your account first' });
+            }
+            else {
+                res.render('add-wallet');
+            }
+        }
+    )
+})
 app.get('/wallet/add', (req, res) => {
     res.render('add-wallet');
 })
