@@ -1,11 +1,12 @@
 import './db.mjs'
 import express from 'express'
+import session from 'express-session';
 import path from 'path'
 import mongoose from 'mongoose';
 import { fileURLToPath } from 'url';
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
-import nodemailer from 'nodemailer';
+import * as auth from './auth.mjs';
 import sgMail from '@sendgrid/mail';
 
 const app = express();
@@ -22,11 +23,21 @@ app.use(express.static(path.join(__dirname, 'public')));
 // console.log(path.join(__dirname, 'public'));
 app.use(express.urlencoded({ extended: false }));
 
-// app.use(session({
-//     secret: 'keyboard cat',
-//     resave: false,
-//     saveUninitialized: true,
-// }));
+app.use(session({
+    secret: 'keyboard cat',
+    resave: false,
+    saveUninitialized: true,
+}));
+
+// require authenticated user for /wallet/add path
+app.use(auth.authRequired(['/wallet/add']));
+app.use(auth.authRequired(['/budget/add']));
+
+// make {{user}} variable available for all paths
+app.use((req, res, next) => {
+    res.locals.user = req.session.user;
+    next();
+});
 
 app.get('/', (req, res) => {
     res.render('login');
@@ -147,7 +158,13 @@ app.post('/', (req, res) => {
                 res.render('login', { 'Unverified': 'Please verify your account first' });
             }
             else {
-                res.render('add-wallet');
+                auth.startAuthenticatedSession(req, user, (err) => {
+                    if (!err) {
+                        res.redirect('/home');
+                    } else {
+                        res.render('login', { 'unexpected': 'Sorry :( An unexpected error occur. Please try again.' })
+                    }
+                })
             }
         }
     )
