@@ -3,10 +3,16 @@ import express from 'express'
 import path from 'path'
 import mongoose from 'mongoose';
 import { fileURLToPath } from 'url';
+import bcrypt from 'bcryptjs';
+import crypto from 'crypto';
+import nodemailer from 'nodemailer';
+import sgMail from '@sendgrid/mail';
 
 const app = express();
 const Wallet = mongoose.model('Wallets');
 const Budget = mongoose.model('Budgets');
+const User = mongoose.model('Users');
+const Token = mongoose.model('Tokens');
 
 app.set('view engine', 'hbs');
 const __filename = fileURLToPath(import.meta.url);
@@ -28,6 +34,88 @@ app.get('/', (req, res) => {
 app.get('/sign-up', (req, res) => {
     res.render('signup');
 })
+
+app.post('/sign-up', (req, res) => {
+    // console.log(req.body);
+    User.findOne({ email: req.body.email }, (err, user) => {
+        if (err) {
+            return res.status(500).send({ msg: err.message });
+        }
+        else if (user) {
+            return res.status(400).send({ msg: 'This email address is already associated with another account.' });
+        }
+        else {
+            const pass = bcrypt.hashSync(req.body.password, 10)
+            let curr;
+            if (req.body.currency !== 'Select Currency') {
+                curr = req.body.currency;
+            }
+            else {
+                curr = None;
+            }
+            const newUser = new User({
+                email: req.body.email,
+                password: pass,
+                currency: curr,
+                budget: [],
+                wallets: []
+            })
+            newUser.save((err) => {
+                if (err) {
+                    return res.status(500).send({ msg: err.message });
+                }
+                const newToken = new Token({
+                    _userId: newUser._id,
+                    token: crypto.randomBytes(16).toString('hex')
+                })
+
+                newToken.save(function (err) {
+                    if (err) {
+                        return res.status(500).send({ msg: err.message })
+                    }
+
+                    // const transporter = nodemailer.createTransport(
+                    //     sendgridTransport.sendgridTransport(
+                    //         {
+                    //             api_key: "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"
+                    //         }
+                    //     )
+                    // )
+                    sgMail.setApiKey("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");
+                    const mailOptions = {
+                        from: 'moneylover.ait@gmail.com',
+                        to: newUser.email,
+                        subject: 'Account Verification Link',
+                        text: 'Hello' + ',\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/confirmation\/' + newUser.email + '\/' + newToken.token + '\n\nThank You!\n'
+                    };
+
+                    sgMail
+                        .send(mailOptions)
+                        .then(() => {
+                            const successMsg = 'A verification email has been sent to ' + newUser.email + '. It will expire after 24 hours. Make sure to check your spam folder as well.'
+                            // return res.status(200).send('A verification email has been sent to ' + newUser.email + '. It will be expire after one day. If you have not got the verification Email, check your spam folder or click on resend token.');
+                            res.render('signup', { 'success': successMsg });
+                        }, err => {
+                            // console.error(err);
+                            // if (err.response) {
+                            //     console.error(err.response.body);
+                            // }
+                            res.render('signup', { 'failure': 'There was some issue sending the verification email. Please try again later.' })
+                        });
+
+                    // transporter.sendMail(mailOptions, function (err) {
+                    //     if (err) {
+                    //         console.log(err)
+                    //         return res.status(500).send({ msg: 'Technical Issue!, Please click on resend for verify your Email.' });
+                    //     }
+                    //     return res.status(200).send('A verification email has been sent to ' + newUser.email + '. It will be expire after one day. If you not get verification Email click on resend token.');
+                    // })
+                })
+            })
+        }
+    })
+})
+
 app.get('/wallet/add', (req, res) => {
     res.render('add-wallet');
 })

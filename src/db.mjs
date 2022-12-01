@@ -24,9 +24,9 @@ const WalletSchema = new mongoose.Schema({
 
 const UserSchema = new mongoose.Schema({
     email: { type: String, required: true },
-    password: { type: String },
+    password: { type: String, required: true },
     isVerified: { type: Boolean, default: false },
-    currency: String,
+    currency: { type: String },
     budget: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Budgets' }], // reference to a budget object
     expenses: { type: mongoose.Schema.Types.ObjectId, ref: 'Expenses' }, // reference to an expense object
     wallets: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Wallets' }] // reference to a wallet object

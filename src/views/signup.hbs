@@ -33,8 +33,8 @@
                         <label for="currency" class="sr-only">Currency</label>
                         <select id="currency" name="currency" required
                             class="relative block w-full appearance-none rounded-none rounded-b-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-                            placeholder="Currency">
-                            <option class="text-gray-900 placeholder-gray-500">Select Currency</option>
+                            placeholder="Currency" value="">
+                            <option value="USD" class="placeholder-gray-500">US Dollar</option>
                             <option value="AFN">Afghan Afghani</option>
                             <option value="ALL">Albanian Lek</option>
                             <option value="DZD">Algerian Dinar</option>
@@ -220,6 +220,14 @@
                         </span>
                         Sign Up
                     </button>
+                </div>
+                <div>
+                    {{#if success}}
+                    <p class="ml-2 block text-sm text-gray-900">{{success}}</p>
+                    {{/if}}
+                    {{#if failure}}
+                    <p class="ml-2 block text-sm text-gray-900">{{failure}}</p>
+                    {{/if}}
                 </div>
             </form>
 
