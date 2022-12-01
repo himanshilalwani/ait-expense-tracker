@@ -74,13 +74,6 @@ app.post('/sign-up', (req, res) => {
                         return res.status(500).send({ msg: err.message })
                     }
 
-                    // const transporter = nodemailer.createTransport(
-                    //     sendgridTransport.sendgridTransport(
-                    //         {
-                    //             api_key: "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"
-                    //         }
-                    //     )
-                    // )
                     sgMail.setApiKey("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");
                     const mailOptions = {
                         from: 'moneylover.ait@gmail.com',
@@ -102,18 +95,43 @@ app.post('/sign-up', (req, res) => {
                             // }
                             res.render('signup', { 'failure': 'There was some issue sending the verification email. Please try again later.' })
                         });
-
-                    // transporter.sendMail(mailOptions, function (err) {
-                    //     if (err) {
-                    //         console.log(err)
-                    //         return res.status(500).send({ msg: 'Technical Issue!, Please click on resend for verify your Email.' });
-                    //     }
-                    //     return res.status(200).send('A verification email has been sent to ' + newUser.email + '. It will be expire after one day. If you not get verification Email click on resend token.');
-                    // })
                 })
             })
         }
     })
+})
+
+app.get('/confirmation/:email/:token', (req, res) => {
+    Token.findOne(
+        { token: req.params.token }, function (err, token) {
+            if (!token) {
+                res.render('signup', { 'expired': 'Your verification link may have expired. Please try again.' })
+            }
+            else {
+                User.findOne(
+                    { _id: token._userId, email: req.params.email }, function (err, user) {
+                        if (!user) {
+                            res.render('signup', { 'verFailed': 'Verification failed. Please try again.' })
+                        }
+                        else if (user.isVerified) {
+                            res.render('login', { 'alreadyVerified': 'Account already verified!! Please log in.' });
+                        }
+                        else {
+                            user.isVerified = true;
+                            user.save((err) => {
+                                if (err) {
+                                    res.render('signup', { 'verFailed': 'Verification failed. Please try again.' });
+                                }
+                                else {
+                                    res.render('login', { 'verified': 'Account Verified!! You can log in now.' })
+                                }
+                            })
+                        }
+                    }
+                )
+            }
+        }
+    )
 })
 
 app.get('/wallet/add', (req, res) => {

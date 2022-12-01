@@ -60,10 +60,22 @@
                     </button>
                 </div>
             </form>
+            {{#if verified}}
+            <p class="mt-2 text-center text-sm text-gray-600">
+                {{verified}}
+            </p>
+            {{else}}
+            {{#if alreadyVerified}}
+            <p class="mt-2 text-center text-sm text-gray-600">
+                {{alreadyVerified}}
+            </p>
+            {{else}}
             <p class="mt-2 text-center text-sm text-gray-600">
                 Don't have an account?
                 <a href="sign-up" class="font-medium text-indigo-600 hover:text-indigo-500">Sign up here</a>
             </p>
+            {{/if}}
+            {{/if}}
         </div>
     </div>
 </body>
