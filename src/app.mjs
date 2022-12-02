@@ -723,7 +723,17 @@ app.get('/budgets', (req, res) => {
             }
 
         })
-    // res.render('budgets', { currency: req.session.user.currency });
+})
+
+app.get('/logout', (req, res) => {
+    auth.endAuthenticatedSession(req, (err) => {
+        if (!err) {
+            res.redirect('/');
+        }
+        else {
+            res.redirect('/home')
+        }
+    })
 })
 
 app.listen(process.env.PORT || 3000);
