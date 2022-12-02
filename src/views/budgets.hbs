@@ -1,21 +1,196 @@
-<h2>Your Budgets</h2>
-{{#if error}}
-<div class="no-budgets">You do not have any budgets created. Add them <a href="/budget/add">here</a></div>
+<body class="flex bg-gray-100 min-h-screen">
+    <aside class="hidden sm:flex sm:flex-col">
+        <a href="#"
+            class="inline-flex items-center justify-center h-20 w-20 bg-indigo-600 hover:bg-indigo-500 focus:bg-indigo-500">
+            {{!-- <svg fill="none" viewBox="0 0 64 64" class="h-12 w-12">
+                <title>Company logo</title>
+                <path
+                    d="M32 14.2c-8 0-12.9 4-14.9 11.9 3-4 6.4-5.6 10.4-4.5 2.3.6 4 2.3 5.7 4 2.9 3 6.3 6.4 13.7 6.4 7.9 0 12.9-4 14.8-11.9-3 4-6.4 5.5-10.3 4.4-2.3-.5-4-2.2-5.7-4-3-3-6.3-6.3-13.7-6.3zM17.1 32C9.2 32 4.2 36 2.3 43.9c3-4 6.4-5.5 10.3-4.4 2.3.5 4 2.2 5.7 4 3 3 6.3 6.3 13.7 6.3 8 0 12.9-4 14.9-11.9-3 4-6.4 5.6-10.4 4.5-2.3-.6-4-2.3-5.7-4-2.9-3-6.3-6.4-13.7-6.4z"
+                    fill="#fff" />
+            </svg> --}}
+            <img src="https://img.icons8.com/external-others-pike-picture/100/000000/external-Money-Tracking-detective-others-pike-picture-2.png"
+                alt="Logo" height="60" width="60">
+        </a>
+        <div class="flex-grow flex flex-col justify-between text-gray-500 bg-gray-800">
+            <nav class="flex flex-col mx-4 my-6 space-y-4">
+                <a href="/home"
+                    class="inline-flex items-center justify-center py-3 hover:text-gray-400 hover:bg-gray-700 focus:text-gray-400 focus:bg-gray-700 rounded-lg">
+                    <span class="sr-only">Dashboard</span>
+                    <svg aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                    </svg>
+                </a>
 
-{{else}}
-<table>
-    <tr>
-        <th>Name</th>
-        <th>Categories</th>
-    </tr>
-    {{#each budgets as |b|}}
-    <tr>
-        <td>{{name}}</td>
-        <td>{{categories}}</td>
-    </tr>
-    {{/each}}
+                <a href="/expenses"
+                    class="inline-flex items-center justify-center py-3 hover:text-gray-400 hover:bg-gray-700 focus:text-gray-400 focus:bg-gray-700 rounded-lg">
+                    <span class="sr-only">Expenses</span>
+                    <svg aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+                    </svg>
+                </a>
 
-</table>
+                <a href="/budgets"
+                    class="inline-flex items-center justify-center py-3 text-indigo-600 bg-white rounded-lg">
+                    <span class="sr-only">Budgets</span>
+                    <svg aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                    </svg>
+                </a>
+                <a href="#"
+                    class="inline-flex items-center justify-center py-3 hover:text-gray-400 hover:bg-gray-700 focus:text-gray-400 focus:bg-gray-700 rounded-lg">
+                    <span class="sr-only">Log Out</span>
+                    <svg aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                </a>
+            </nav>
+        </div>
+    </aside>
+    <div class="flex-grow text-gray-800">
 
-<div>Wanna add more? Click <a href="/budget/add">here</a></div>
-{{/if}}
+        <main class="p-6 sm:p-10 space-y-6">
+            <div class="flex flex-col space-y-6 md:space-y-0 md:flex-row justify-between">
+                <div class="mr-6">
+                    <h1 class="text-4xl font-semibold mb-2">Budgets - All amounts in {{currency}}</h1>
+                </div>
+            </div>
+
+
+
+            <section class="grid md:grid-cols-2 xl:grid-cols-2 justify-items-center gap-6">
+                <form action="/budgets" method="post">
+                    <div class="flex items-center p-8  bg-white shadow rounded-lg">
+
+
+                        <label class="block text-2xl font-bold" for="date">Select a Budget</label>
+                        {{#if names}}
+                        <div class=" px-8">
+                            <select id="budget"
+                                class="budget mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                name="budget">
+                                {{#each names}}
+                                <option value="{{this}}">{{this}}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                        <div class="relative block">
+                            <button type="submit">
+                                <img src="https://img.icons8.com/cute-clipart/64/null/search-more.png" />
+                            </button>
+                        </div>
+                        {{else}}
+                        {{#if nbc}}
+                        <div class=" px-8">
+
+                            <select id="budgets"
+                                class=" mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+
+                                <option value={{nbc}}>{{nbc}}</option>
+
+                            </select>
+                        </div>
+                        <div class="relative block">
+
+                            <img src="https://img.icons8.com/cute-clipart/64/null/search-more.png" />
+
+                        </div>
+                        {{/if}}
+                        {{/if}}
+
+
+                    </div>
+                </form>
+                <div class="flex items-center p-8 bg-white shadow rounded-lg">
+
+                    <div>
+                        <label class="block text-2xl font-bold" for="date">Create a Budget</label>
+                    </div>
+
+                    <div class="relative mr-0">
+                        <a href="/add-budget">
+                            <img src="https://img.icons8.com/clouds/100/null/plus-2-math.png" height="64px"
+                                width="64px">
+                        </a>
+                    </div>
+                </div>
+
+
+            </section>
+            {{#if bC}}
+            <p class="text-center text-2xl font-bold">{{bN}}</p>
+            <div class="grid grid-cols-2 grid-rows-1 gap-6 justify-center">
+                <div
+                    class="border rounded-lg md:rounded-r-none text-center p-5 mx-auto md:mx-0 my-2 md:my-6 bg-gray-100 font-medium z-10 shadow-lg">
+                    <div class="text-xl font-bold">Budget</div>
+                    <hr>
+                    {{#each bC}}
+                    <div class="text-lg my-3">{{@key}}</div>
+                    <div class="text-lg my-3">{{this}}</div>
+                    <hr>
+                    {{/each}}
+                </div>
+
+
+
+                <div
+                    class="border rounded-lg  md:rounded-l-none text-center p-5 mx-auto md:mx-0 my-2 md:my-6 bg-gray-100 font-medium z-10 shadow-lg">
+                    <div class="text-xl font-bold">Expenditure</div>
+
+                    <hr>
+                    {{#each expC}}
+                    <div class="text-lg my-3">{{category}}</div>
+                    <div class="text-lg my-3">{{amount}}</div>
+                    <hr>
+                    {{/each}}
+
+                </div>
+            </div>
+            {{/if}}
+            {{!-- <section class="grid md:grid-cols-2 xl:grid-cols-3 xl:grid-rows-2 xl:grid-flow-col gap-6">
+
+
+                <div class="row-span-3 bg-white shadow rounded-lg">
+                    <form action="/add-wallet" method="get">
+                        <div class="flex items-center justify-between px-6 py-5 font-semibold border-b border-gray-100">
+                            <span>Your Wallets</span>
+                            <button>Add</button>
+                            <!-- Refer here for full dropdown menu code: https://tailwindui.com/components/application-ui/elements/dropdowns -->
+                        </div>
+                    </form>
+
+                    <div class="overflow-y-scroll" style="max-height: 24rem;">
+                        <ul class="p-6 space-y-6">
+                            {{#each wallet}}
+                            <li class="flex items-center">
+                                <div class="h-10 w-10 mr-3 overflow-hidden">
+                                    <img
+                                        src="https://img.icons8.com/external-tanah-basah-detailed-outline-tanah-basah/48/null/external-wallet-user-interface-tanah-basah-detailed-outline-tanah-basah.png" />
+                                </div>
+                                <span class="text-gray-600">{{name}}</span>
+                                <span class="ml-auto font-semibold">{{amount}}</span>
+                            </li>
+                            {{/each}}
+
+                        </ul>
+                    </div>
+                </div>
+
+            </section> --}}
+            {{!-- <section class="text-right font-semibold text-gray-500">
+                <a href="#" class="text-indigo-600 hover:underline">Recreated on Codepen</a> with <a
+                    href="https://tailwindcss.com/" class="text-teal-400 hover:underline">Tailwind CSS</a> by Azri
+                Kahar, <a href="https://dribbble.com/shots/10711741-Free-UI-Kit-for-Figma-Online-Courses-Dashboard"
+                    class="text-indigo-600 hover:underline">original design</a> made by Chili Labs
+            </section> --}}
+        </main>
+    </div>
+
+</body>
+
+<script>
+
+</script>

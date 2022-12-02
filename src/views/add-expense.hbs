@@ -91,19 +91,19 @@
                                             <input type="number" name="amount" id="amount" required
                                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                                             <br>
+                                            {{#if bC}}
                                             <label for="budget"
                                                 class="block text-sm font-medium text-gray-700">Budget</label>
-                                            <select id="countries"
+                                            <select id="budget" name="budget"
                                                 class=" mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-                                                <option selected>Choose a budget</option>
-                                                <option value="US">United States</option>
-                                                <option value="CA">Canada</option>
-                                                <option value="FR">France</option>
-                                                <option value="DE">Germany</option>
+                                                <option value="None">Select A Budget</option>
+                                                {{#each bC}}
+                                                <option value="{{this}}">{{this}}</option>
+                                                {{/each}}
                                             </select>
 
                                             <br>
-
+                                            {{/if}}
 
                                             <div class="px-6 py-3 sm:flex sm:flex-row-reverse sm:px-6">
 
@@ -152,8 +152,7 @@
             </section>
             <section class="grid md:grid-cols-2 xl:grid-cols-3 xl:grid-rows-2 xl:grid-flow-col gap-6">
                 <div class="flex flex-col md:col-span-2 md:row-span-2 bg-white shadow rounded-lg">
-                    <div class="px-6 py-5 font-semibold border-b border-gray-100">The number of applied and left
-                        students per month</div>
+                    <div class="px-6 py-5 font-semibold border-b border-gray-100">Spending Report for</div>
                     <div class="p-4 flex-grow">
                         <div
                             class="flex items-center justify-center h-full px-4 py-16 text-gray-400 text-3xl font-semibold bg-gray-100 border-2 border-gray-200 border-dashed rounded-md">

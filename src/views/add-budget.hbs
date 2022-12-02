@@ -1,14 +1,221 @@
+<body class="flex bg-gray-100 min-h-screen">
+    <aside class="hidden sm:flex sm:flex-col">
+        <a href="#"
+            class="inline-flex items-center justify-center h-20 w-20 bg-indigo-600 hover:bg-indigo-500 focus:bg-indigo-500">
+            {{!-- <svg fill="none" viewBox="0 0 64 64" class="h-12 w-12">
+                <title>Company logo</title>
+                <path
+                    d="M32 14.2c-8 0-12.9 4-14.9 11.9 3-4 6.4-5.6 10.4-4.5 2.3.6 4 2.3 5.7 4 2.9 3 6.3 6.4 13.7 6.4 7.9 0 12.9-4 14.8-11.9-3 4-6.4 5.5-10.3 4.4-2.3-.5-4-2.2-5.7-4-3-3-6.3-6.3-13.7-6.3zM17.1 32C9.2 32 4.2 36 2.3 43.9c3-4 6.4-5.5 10.3-4.4 2.3.5 4 2.2 5.7 4 3 3 6.3 6.3 13.7 6.3 8 0 12.9-4 14.9-11.9-3 4-6.4 5.6-10.4 4.5-2.3-.6-4-2.3-5.7-4-2.9-3-6.3-6.4-13.7-6.4z"
+                    fill="#fff" />
+            </svg> --}}
+            <img src="https://img.icons8.com/external-others-pike-picture/100/000000/external-Money-Tracking-detective-others-pike-picture-2.png"
+                alt="Logo" height="60" width="60">
+        </a>
+        <div class="flex-grow flex flex-col justify-between text-gray-500 bg-gray-800">
+            <nav class="flex flex-col mx-4 my-6 space-y-4">
+                <a href="/home"
+                    class="inline-flex items-center justify-center py-3 hover:text-gray-400 hover:bg-gray-700 focus:text-gray-400 focus:bg-gray-700 rounded-lg">
+                    <span class="sr-only">Dashboard</span>
+                    <svg aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                    </svg>
+                </a>
+
+                <a href="/expenses"
+                    class="inline-flex items-center justify-center py-3 hover:text-gray-400 hover:bg-gray-700 focus:text-gray-400 focus:bg-gray-700 rounded-lg">
+                    <span class="sr-only">Expenses</span>
+                    <svg aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+                    </svg>
+                </a>
+
+                <a href="/budgets"
+                    class="inline-flex items-center justify-center py-3 text-indigo-600 bg-white rounded-lg">
+                    <span class="sr-only">Budgets</span>
+                    <svg aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                    </svg>
+                </a>
+                <a href="#"
+                    class="inline-flex items-center justify-center py-3 hover:text-gray-400 hover:bg-gray-700 focus:text-gray-400 focus:bg-gray-700 rounded-lg">
+                    <span class="sr-only">Log Out</span>
+                    <svg aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                </a>
+            </nav>
+        </div>
+    </aside>
+    <div class="flex-grow text-gray-800">
+
+        <main class="p-6 sm:p-10 space-y-6">
+            <div class="flex flex-col space-y-6 md:space-y-0 md:flex-row justify-between">
+                <div class="mr-6">
+                    <h1 class="text-4xl font-semibold mb-2">Budgets - All amounts in {{currency}}</h1>
+                </div>
+            </div>
+
+
+            <div class="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+
+                <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+
+                <div class="fixed inset-0 z-10 overflow-y-auto">
+                    <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+
+                        <div
+                            class="relative transform overflow-y-scroll rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+                            <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                                <div class="sm:flex sm:items-center">
+
+                                    <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                                        <h3 class="text-lg font-medium leading-6 text-gray-900" id="modal-title">
+                                            Create a Budget</h3>
+                                        <div class="mt-2">
+
+                                            <form action="/add-budget" method="post" id="expense">
+                                                <div id="form">
+                                                    <label for="name"
+                                                        class="block text-sm font-medium text-gray-700">Budget
+                                                        Name</label>
+                                                    <input required type="text" name="name" id="name"
+                                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                                    <br>
+                                                    <span onclick="add()" class="addbtn">Add A Category</span>
+
+
+                                                    <div class="category">
+                                                        <br>
+                                                        <label for="amount"
+                                                            class="block text-sm font-medium text-gray-700">Category:
+                                                        </label>
+                                                        <input type="text" list="categories"
+                                                            class="categories-list mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                                            name="category" value="">
+                                                        <datalist id="categories">
+                                                            <option value="Accommodation"></option>
+                                                            <option value="Transportation"></option>
+                                                            <option value="Food"></option>
+                                                        </datalist>
+                                                        <label for="amount"
+                                                            class="block text-sm font-medium text-gray-700">Amount:
+                                                        </label>
+                                                        <input type="number" name="amount"
+                                                            class="amount mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                                        {{!-- <span onclick="this.parentElement.remove();"
+                                                            class="closebtn">Delete</span> --}}
+                                                        <br>
+                                                    </div>
+
+                                                </div>
+
+                                                <div class="px-6 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+
+                                                    <button type="submit"
+                                                        class="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-indigo-300 px-8 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:ring-offset-2 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">Create</button>
+                                                    <a href="/budgets">
+                                                        <button type="button"
+                                                            class="inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-8 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm">Cancel</button>
+
+                                                    </a>
+                                                </div>
+                                            </form>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <section class="grid md:grid-cols-2 xl:grid-cols-2 justify-items-center gap-6">
+                <form action="/expenses" method="post">
+                    <div class="flex items-center p-8  bg-white shadow rounded-lg">
+
+
+                        <label class="block text-2xl font-bold" for="date">Select a Budget</label>
+                        <div class=" px-8">
+
+                            <select id="countries"
+                                class=" mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                <option selected>Budget</option>
+                                <option value="US">United States</option>
+                                <option value="CA">Canada</option>
+                                <option value="FR">France</option>
+                                <option value="DE">Germany</option>
+                            </select>
+                        </div>
+                        <div class="relative block">
+                            <button type="submit">
+                                <img src="https://img.icons8.com/cute-clipart/64/null/search-more.png" />
+                            </button>
+                        </div>
+
+
+                    </div>
+                </form>
+
+                <div class="flex items-center p-8 bg-white shadow rounded-lg">
+
+                    <div>
+                        <label class="block text-2xl font-bold" for="date">Create a Budget</label>
+                    </div>
+
+                    <div class="relative mr-0">
+                        <button type="submit">
+                            <img src="https://img.icons8.com/clouds/100/null/plus-2-math.png" height="64px"
+                                width="64px">
+                        </button>
+                    </div>
+                </div>
+
+
+            </section>
+
+
+
+
+
+    </div>
+
+
+
+    {{!-- <section class="text-right font-semibold text-gray-500">
+        <a href="#" class="text-indigo-600 hover:underline">Recreated on Codepen</a> with <a
+            href="https://tailwindcss.com/" class="text-teal-400 hover:underline">Tailwind CSS</a> by Azri
+        Kahar, <a href="https://dribbble.com/shots/10711741-Free-UI-Kit-for-Figma-Online-Courses-Dashboard"
+            class="text-indigo-600 hover:underline">original design</a> made by Chili Labs
+    </section> --}}
+    </main>
+    </div>
+
+</body>
+
 <script>
     function add() {
         let i = 1;
         const original = document.getElementsByClassName('category')[0];
+        if (original !== undefined) {
+            let clone = original.cloneNode(true);
+            clone.style.display = 'block';
+            clone.className = "category";
+            clone.querySelector(".amount").value = "";
+            clone.querySelector(".categories-list").value = "";
+            const span = document.createElement('span');
+            span.className = 'closebtn';
+            span.textContent = 'Delete';
+            span.setAttribute('onclick', 'this.parentElement.remove();');
+            clone.appendChild(span);
+            original.parentNode.appendChild(clone);
 
-        let clone = original.cloneNode(true);
-        clone.style.display = 'block';
-        clone.className = "category";
-        clone.querySelector(".amount").value = "";
-        clone.querySelector(".categories-list").value = "";
-        original.parentNode.appendChild(clone);
+        }
+
     }
 
     function checkInput() {
@@ -20,34 +227,45 @@
         }
     }
 </script>
-<h1>Create a Budget</h1>
-<form action="" method="post" id="expense">
-    <div>
-        <div id="data">
-            <label for="name">Budget Name: </label>
-            <input type="text" id="name" name="name" value="">
-            <br>
-            <div class="category">
-                <label for="amount">Category: </label>
-                <input type="text" list="categories" class="categories-list" name="category" value="">
-                <datalist id="categories">
-                    <option value="Accommodation"></option>
-                    <option value="Transportation"></option>
-                    <option value="Food"></option>
-                </datalist>
-                <label for="amount">Amount: </label>
-                <input type="number" name="amount" class="amount">
-                <span onclick="this.parentElement.remove();" class="closebtn">Delete</span>
 
-            </div>
-        </div>
-        <span onclick="add()" class="addbtn">Add</span>
-
-    </div>
-
-    <button type="submit">Submit</button>
-</form>
-{{#if message}}
-<div style="color: green;">{{message}}</div>
-{{/if}}
-{{!-- <div>View your budgets <a href="/home">here</a></div> --}}
+{{!-- else {
+const div = document.createElement('div');
+div.className = 'category';
+const l1 = document.createElement('label');
+l1.className = "block text-sm font-medium text-gray-700";
+l1.setAttribute('for', 'amount');
+l1.textContent = 'Category: ';
+const i1 = document.createElement('input');
+i1.setAttribute('type', 'text');
+i1.setAttribute('list', 'categories');
+i1.className = 'categories-list mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500
+focus:ring-indigo-500 sm:text-sm';
+i1.setAttribute('name', 'category');
+i1.setAttribute('value', "");
+const data = document.createElement('datalist');
+data.setAttribute('id', 'categories');
+const o1 = document.createElement('option');
+o1.setAttribute('value', 'Accommodation');
+const o2 = document.createElement('option');
+o2.setAttribute('value', 'Transportation');
+const o3 = document.createElement('option');
+o3.setAttribute('value', 'Food');
+const l2 = document.createElement('label');
+l2.className = "block text-sm font-medium text-gray-700";
+l2.setAttribute('for', 'amount');
+l2.textContent = 'Amount: ';
+const i2 = document.createElement('input');
+i2.setAttribute('type', 'number');
+i2.setAttribute('name', 'amount');
+i2.className = 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500
+sm:text-sm';
+i2.setAttribute('value', "");
+const span = document.createElement('span');
+span.className = 'closebtn';
+span.textContent = 'Delete';
+span.setAttribute('onclick', 'this.parentElement.remove();');
+div.append(l1, i1, data, l2, i2, span);
+data.append(o1, o2, o3);
+const parentDiv = document.getElementById('form');
+parentDiv.appendChild(div);
+} --}}

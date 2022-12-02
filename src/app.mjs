@@ -9,6 +9,7 @@ import crypto from 'crypto';
 import * as auth from './auth.mjs';
 import sgMail from '@sendgrid/mail';
 import hbs from 'hbs';
+import exp from 'constants';
 
 const app = express();
 const Wallet = mongoose.model('Wallets');
@@ -36,7 +37,8 @@ app.use(session({
 
 // require authenticated user for /wallet/add path
 app.use(auth.authRequired(['/add-wallet']));
-app.use(auth.authRequired(['/budget/add']));
+app.use(auth.authRequired(['/budgets']));
+app.use(auth.authRequired(['/add-budget']));
 app.use(auth.authRequired(['/home']));
 app.use(auth.authRequired(['/expenses']));
 app.use(auth.authRequired(['/add-expense']));
@@ -61,7 +63,7 @@ app.post('/sign-up', (req, res) => {
             return res.status(500).send({ msg: err.message });
         }
         else if (user) {
-            return res.status(400).send({ msg: 'This email address is already associated with another account.' });
+            res.render('signup', { 'AlreadyAssociated': 'This email address is already associated with another account.' });
         }
         else {
             const pass = bcrypt.hashSync(req.body.password, 10)
@@ -216,7 +218,7 @@ app.get('/add-wallet', (req, res) => {
                     return { 'name': wallet.name, 'amount': wallet.amount };
                 })
 
-                console.log(filteredWallets);
+                // console.log(filteredWallets);
                 User.findOne({ _id: req.session.user._id }).
                     populate('expenses').
                     exec(function (err, expenses) {
@@ -243,44 +245,88 @@ app.get('/add-wallet', (req, res) => {
 }
 )
 
-app.get('/budget/add', (req, res) => {
-    res.render('add-budget');
+app.get('/add-budget', (req, res) => {
+    res.render('add-budget', { currency: req.session.user.currency });
 })
 
-app.post('/budget/add', (req, res) => {
-    // console.log(req.body);
-    // const obj = {}
-    // obj['budgetName'] = req.body.name;
-    const obj2 = {};
-    if (Array.isArray(req.body.category)) {
-        req.body.category.forEach((element, index) => {
-            obj2[element] = req.body.amount[index];
-        });
-    }
-    else {
-        obj2[req.body.category] = req.body.amount;
-    }
+app.post('/add-budget', (req, res) => {
+    User.findOne({ _id: req.session.user._id }, function (err, user) {
+        if (user) {
+            const obj2 = {};
+            if (Array.isArray(req.body.category)) {
+                req.body.category.forEach((element, index) => {
+                    obj2[element] = req.body.amount[index];
+                });
+            }
+            else {
+                obj2[req.body.category] = req.body.amount;
+            }
+            const newBudget = new Budget({
+                name: req.body.name,
+                categories: obj2
+            });
+            newBudget.save((err, savedBudget) => {
+                if (savedBudget) {
+                    console.log(savedBudget);
+                    user.budget.push(savedBudget._id);
+                    user.save((err, savedUser) => {
+                        if (savedUser) {
+                            res.redirect('/budgets')
+                        }
+                        else {
+                            console.log(err);
+                            // window.alert('Some error occurred! Please try again!')
+                            res.redirect('/budgets');
 
-    // obj['setCategories'] = obj2;
-    const newBudget = new Budget({
-        name: req.body.name,
-        categories: obj2
-    })
+                        }
+                    })
 
-    newBudget.save((err, savedBudget) => {
-        if (savedBudget) {
-            console.log(savedBudget);
-            res.redirect('/budgets')
-        }
-        else {
-            console.log(err);
-            res.render('add-budget', { message: "Try Again!" });
+                }
+                else {
+                    console.log(err)
+                    res.redirect('/budgets');
+                }
+            })
         }
     })
 
 })
 
+app.post('/budgets', function (req, res) {
+    User.findOne({ _id: req.session.user._id })
+        .populate('budget')
+        .exec(function (err, budget) {
+            if (budget) {
+                const budgets = budget['budget'];
+                // console.log("budgets: ", budgets)
+                const budgetNames = budgets.map(b => b.name);
+                // console.log(req.body.budget);
+                const filteredBudget = budgets.filter(b => b.name == req.body.budget)[0];
+                // console.log("FB", filteredBudget)
+                User.findOne({ _id: req.session.user._id })
+                    .populate('expenses')
+                    .exec(function (err, user) {
+                        if (user) {
+                            const budgetExpenses = user['expenses']['budgetExpenses'];
+                            let filteredExpenses = budgetExpenses.filter(b => Object.keys(b)[0] == req.body.budget).map(b => Object.values(b)[0])
+                            filteredExpenses = filteredExpenses.map(
+                                (transaction) => {
+                                    const obj = {};
+                                    obj['category'] = Object.keys(transaction)[0]
+                                    obj['amount'] = Object.values(transaction)[0]
+                                    return obj;
+                                }
+                            )
+                            console.log("FE: ", filteredExpenses)
+                            console.log("FB", filteredBudget)
+                            res.render('budgets', { currency: req.session.user.currency, names: budgetNames, bN: req.body.budget, bC: filteredBudget['categories'], expC: filteredExpenses });
 
+                        }
+                    })
+
+            }
+        })
+})
 app.post('/home', function (req, res) {
     User.findOne({ _id: req.session.user._id }, function (err, user) {
         if (user) {
@@ -318,11 +364,24 @@ app.post('/home', function (req, res) {
 })
 
 app.get('/expenses', (req, res) => {
-    res.render('expense')
+    res.render('expense', { currency: req.session.user.currency })
 })
 
 app.get('/add-expense', (req, res) => {
-    res.render('add-expense')
+    User.findOne({ _id: req.session.user._id })
+        .populate('budget')
+        .exec(function (err, user) {
+            if (user) {
+                if (user['budget'].length > 0) {
+                    const budgetNames = user['budget'].map(b => b.name);
+                    res.render('add-expense', { bC: budgetNames });
+                }
+                else {
+                    res.render('add-expense');
+                }
+            }
+        })
+
 })
 
 app.post('/add-expense', (req, res) => {
@@ -338,13 +397,20 @@ app.post('/add-expense', (req, res) => {
                 obj2[req.body['date-add']] = obj1;
 
                 newExpense.dailyExpenses.push(obj2);
+                if (Object.hasOwn(req.body, 'budget')) {
+                    if (req.body.budget != 'None') {
+                        const obj3 = {};
+                        obj3[req.body.budget] = obj1;
+                        newExpense.budgetExpenses.push(obj3);
+                    }
+                }
 
-                newExpense.save((err, savedExpense) => {
+                newExpense.save(function (err, savedExpense) {
                     if (savedExpense) {
                         user.expenses = savedExpense._id;
-                        user.save((err, savedUser) => {
+                        user.save(function (err, savedUser) {
                             if (savedUser) {
-                                res.redirect('/expenses')
+                                res.redirect('/expenses');
                             }
                             else {
                                 console.log(err);
@@ -355,7 +421,7 @@ app.post('/add-expense', (req, res) => {
                     }
                     else {
                         console.log(err)
-                        res.redirect('/home');
+                        res.redirect('/expenses');
                     }
                 })
             }
@@ -364,7 +430,7 @@ app.post('/add-expense', (req, res) => {
                     if (expense) {
                         if (expense.recent.length > 3) {
                             const last = expense.recent.pop();
-                            expense.save((err, savedExp) => {
+                            expense.save(function (err, savedExp) {
                                 const obj1 = {};
                                 obj1[req.body.category] = req.body.amount;
                                 expense.recent.unshift(obj1);
@@ -374,16 +440,40 @@ app.post('/add-expense', (req, res) => {
                                         obj2[req.body['date-add']] = obj1;
 
                                         expense.dailyExpenses.push(obj2);
-                                        expense.save((err, saved) => {
+                                        expense.save(function (err, saved) {
                                             if (err) {
                                                 console.log(err);
-                                                res.redirect('/expenses');
+                                                // res.redirect('/expenses');
                                             }
                                             else {
-                                                res.redirect('/expenses');
+                                                if (Object.hasOwn(req.body, 'budget')) {
+                                                    if (req.body.budget != 'None') {
+                                                        const obj3 = {};
+                                                        obj3[req.body.budget] = obj1;
+                                                        expense.budgetExpenses.push(obj3);
+                                                        expense.save(function (err, saved) {
+                                                            if (err) {
+                                                                console.log(err);
+                                                            }
+                                                            else {
+                                                                res.redirect('/expenses')
+                                                            }
+
+                                                        })
+                                                    }
+                                                    else {
+                                                        res.redirect('/expenses');
+                                                    }
+                                                }
+                                                else {
+                                                    res.redirect('/expenses');
+                                                }
                                             }
                                         })
 
+                                    }
+                                    else {
+                                        res.redirect('/expenses');
                                     }
                                 })
                             })
@@ -392,21 +482,38 @@ app.post('/add-expense', (req, res) => {
                             const obj1 = {};
                             obj1[req.body.category] = req.body.amount;
                             expense.recent.unshift(obj1);
-                            expense.save((err, saved) => {
+                            expense.save(function (err, saved) {
                                 if (saved) {
                                     const obj2 = {}
                                     obj2[req.body['date-add']] = obj1;
 
                                     expense.dailyExpenses.push(obj2);
-                                    expense.save((err, saved) => {
-                                        if (err) {
-                                            console.log(err);
-                                            res.redirect('/expenses');
-                                        }
-                                        else {
-                                            res.redirect('/expenses');
+                                    expense.save(function (err, saved) {
+                                        if (saved) {
+                                            if (Object.hasOwn(req.body, 'budget')) {
+                                                if (req.body.budget != 'None') {
+                                                    const obj3 = {};
+                                                    obj3[req.body.budget] = obj1;
+                                                    expense.budgetExpenses.push(obj3);
+                                                    expense.save(function (err, saved) {
+                                                        if (err) {
+                                                            console.log(err);
+                                                        }
+                                                        res.redirect('/expenses');
+                                                    })
+                                                }
+                                                else {
+                                                    res.redirect('/expenses')
+                                                }
+                                            }
+                                            else {
+                                                res.redirect('/expenses')
+                                            }
                                         }
                                     })
+                                }
+                                else {
+                                    res.redirect('/expenses')
                                 }
 
                             })
@@ -420,6 +527,7 @@ app.post('/add-expense', (req, res) => {
         }
     }
     )
+    // res.redirect('/expenses');
 }
 );
 
@@ -552,8 +660,7 @@ app.get('/home', (req, res) => {
                                 }, 0);
 
                             const sumArray = [jan, feb, march, april, may, june, july, aug, sept, oct, nov, dec];
-                            // console.log(dec)
-                            // console.log("arr: ", sumArray);
+
                             res.render('home', { wallet: filteredWallets, recent: recentMap, currency: req.session.user.currency, sumArray: sumArray });
                         }
 
@@ -588,45 +695,35 @@ app.post('/expenses', (req, res) => {
                         }
                     )
 
-                    res.render('expense', { exp: filteredMap, dt: req.body.date, exp2: JSON.stringify(filteredMap) });
+                    res.render('expense', { exp: filteredMap, dt: req.body.date, exp2: JSON.stringify(filteredMap), currency: req.session.user.currency });
 
                 }
                 else {
-                    res.render('expense', { message: 'You do not have any expenses tracked for the selected date.', dt: req.body.date })
+                    res.render('expense', { message: 'You do not have any expenses tracked for the selected date.', dt: req.body.date, currency: req.session.user.currency })
                 }
 
             }
             else {
-                res.render('expense', { message: 'You do not have any expenses tracked for the selected date.', dt: req.body.date })
+                res.render('expense', { message: 'You do not have any expenses tracked for the selected date.', dt: req.body.date, currency: req.session.user.currency })
             }
         })
 })
 
-// Wallet.find({}).exec((err, wallets) => {
-//     if (wallets.length === 0) {
-//         res.render('home', { error: true })
-//     }
-//     else {
-//         res.render('home', { error: false, wallets: wallets })
-//     }
-// })
-
 
 app.get('/budgets', (req, res) => {
-    res.redirect('/home')
-    // Budget.find({}).exec((err, budgets) => {
-    //     if (budgets.length === 0) {
-    //         res.render('budgets', { error: true })
-    //     }
-    //     else {
-    //         const newBudget = JSON.parse(JSON.stringify(budgets));
-    //         // console.log(JSON.stringify(newBudget));
-    //         newBudget.forEach((budget) => {
-    //             budget['categories'] = JSON.stringify(budget['categories']);
-    //         })
-    //         res.render('budgets', { error: false, budgets: newBudget })
-    //     }
-    // })
+    User.findOne({ _id: req.session.user._id })
+        .populate('budget')
+        .exec(function (err, budgets) {
+            if (budgets['budget'].length > 0) {
+                const budgetNames = budgets['budget'].map(b => b.name);
+                res.render('budgets', { currency: req.session.user.currency, names: budgetNames });
+            }
+            else {
+                res.render('budgets', { currency: req.session.user.currency, nbc: 'No Budgets Created' });
+            }
+
+        })
+    // res.render('budgets', { currency: req.session.user.currency });
 })
 
 app.listen(process.env.PORT || 3000);
