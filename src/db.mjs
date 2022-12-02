@@ -11,7 +11,7 @@ const BudgetSchema = new mongoose.Schema({
 
 // expenses
 const ExpenseSchema = new mongoose.Schema({
-    recent: Object, // recent expenses
+    recent: Array, // recent expenses
     dailyExpenses: Array, // daily expenses, array of objects
     budgetExpenses: Array // array of expenses for a particular budget
 })

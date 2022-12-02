@@ -25,6 +25,7 @@
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "express-session": "^1.17.3",
+    "flowbite-datepicker": "^1.2.2",
     "hbs": "^4.2.0",
     "mongoose": "^6.6.7",
     "mongoose-url-slugs": "^1.0.2",

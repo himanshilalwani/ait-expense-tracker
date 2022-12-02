@@ -14,16 +14,18 @@
         <div class="flex-grow flex flex-col justify-between text-gray-500 bg-gray-800">
             <nav class="flex flex-col mx-4 my-6 space-y-4">
 
-                <a href="#" class="inline-flex items-center justify-center py-3 text-indigo-600 bg-white rounded-lg">
-                    <span class="sr-only">Dashboard</span>
+
+                <a href="#"
+                    class="inline-flex items-center justify-center py-3 hover:text-gray-400 hover:bg-gray-700 focus:text-gray-400 focus:bg-gray-700 rounded-lg">
+                    <span class="sr-only">Folders</span>
+
                     <svg aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                     </svg>
                 </a>
-                <a href="#"
-                    class="inline-flex items-center justify-center py-3 hover:text-gray-400 hover:bg-gray-700 focus:text-gray-400 focus:bg-gray-700 rounded-lg">
-                    <span class="sr-only">Folders</span>
+                <a href="#" class="inline-flex items-center justify-center py-3 text-indigo-600 bg-white rounded-lg">
+                    <span class="sr-only">Dashboard</span>
                     <svg aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
@@ -53,76 +55,25 @@
         <main class="p-6 sm:p-10 space-y-6">
             <div class="flex flex-col space-y-6 md:space-y-0 md:flex-row justify-between">
                 <div class="mr-6">
-                    <h1 class="text-4xl font-semibold mb-2">Dashboard - All amounts in {{currency}}</h1>
+                    <h1 class="text-4xl font-semibold mb-2">Expenses</h1>
                 </div>
             </div>
-            <section class="grid md:grid-cols-2 xl:grid-cols-4 gap-6">
-                {{#each recent}}
+            <section class="grid md:grid-cols-1 xl:grid-cols-1 gap-6">
                 <div class="flex items-center p-8 bg-white shadow rounded-lg">
-                    <div
-                        class="inline-flex flex-shrink-0 items-center justify-center h-16 w-16 text-indigo-600 bg-indigo-100 rounded-full mr-6">
-                        <img
-                            src="https://img.icons8.com/external-flaticons-flat-flat-icons/64/null/external-wallet-black-friday-cyber-monday-flaticons-flat-flat-icons.png" />
-                    </div>
-                    <div>
-                        <span class="block text-2xl font-bold">{{amount}}</span>
-                        <span class="block text-gray-500">{{category}}</span>
-                    </div>
-                </div>
-                {{/each}}
-
-            </section>
-            <div class="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-
-                <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
-
-                <div class="fixed inset-0 z-10 overflow-y-auto">
-                    <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-
-                        <div
-                            class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
-                            <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                                <div class="sm:flex sm:items-center">
-
-                                    <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                                        <h3 class="text-lg font-medium leading-6 text-gray-900" id="modal-title">
-                                            Add a Wallet</h3>
-                                        <div class="mt-2">
-                                            <form action="/home" method="post" id="expense">
-                                                <div>
-                                                    <label for="name"
-                                                        class="block text-sm font-medium text-gray-700">Name</label>
-                                                    <input type="text" name="name" id="name"
-                                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-
-                                                    <label for="amount"
-                                                        class="block text-sm font-medium text-gray-700">Amount</label>
-                                                    <input type="number" name="amount" id="amount"
-                                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-
-                                                </div>
-
-                                                <div class="px-6 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-
-                                                    <button type="submit"
-                                                        class="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-indigo-300 px-8 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:ring-offset-2 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">Add</button>
-                                                    <a href="/home">
-                                                        <button type="button"
-                                                            class="inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-8 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm">Cancel</button>
-
-                                                    </a>
-                                                </div>
-                                            </form>
-
-                                        </div>
-                                    </div>
-                                </div>
+                    <div class="coc-form">
+                        <div class="coc-block-row">
+                            <label class="coc-block-label block text-2xl font-bold" for="date">Select a Date</label>
+                            <div class="coc-block px-8">
+                                <input
+                                    class="coc-input relative block w-full appearance-none rounded-none rounded-b-md border border-gray-300 px-10 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                                    type="date" name="date" id="date">
                             </div>
-
                         </div>
                     </div>
-                </div>
-            </div>
+
+
+
+            </section>
             <section class="grid md:grid-cols-2 xl:grid-cols-3 xl:grid-rows-2 xl:grid-flow-col gap-6">
                 <div class="flex flex-col md:col-span-2 md:row-span-2 bg-white shadow rounded-lg">
                     <div class="px-6 py-5 font-semibold border-b border-gray-100">The number of applied and left
@@ -135,9 +86,9 @@
                 </div>
 
                 <div class="row-span-3 bg-white shadow rounded-lg">
-                    <form action="" method="post">
+                    <form action="/add-expense" method="get">
                         <div class="flex items-center justify-between px-6 py-5 font-semibold border-b border-gray-100">
-                            <span>Your Wallets</span>
+                            <span>Your Expenses for the Selected Date</span>
                             <button>Add</button>
                             <!-- Refer here for full dropdown menu code: https://tailwindui.com/components/application-ui/elements/dropdowns -->
                         </div>
@@ -145,7 +96,6 @@
 
                     <div class="overflow-y-scroll" style="max-height: 24rem;">
                         <ul class="p-6 space-y-6">
-
                             {{#each wallet}}
                             <li class="flex items-center">
                                 <div class="h-10 w-10 mr-3 overflow-hidden">
@@ -156,7 +106,6 @@
                                 <span class="ml-auto font-semibold">{{amount}}</span>
                             </li>
                             {{/each}}
-
 
                         </ul>
                     </div>
@@ -174,18 +123,75 @@
 </body>
 
 
-{{!-- <h1>Add a Wallet</h1>
-<form action="" method="post" id="expense">
-    <div>
-        <label for="name">Name: </label>
-        <input type="text" id="name" name="name" value="">
-        <br>
-        <label for="amount">Amount: </label>
-        <input type="number" name="amount" id="amount">
-    </div>
-    <button type="submit">Submit</button>
-</form>
-{{#if message}}
-<div style="color: green;">{{message}}</div>
-{{/if}}
-<div>View your wallets <a href="/home">here</a></div> --}}
+
+<style>
+    [type="date"] {
+        background: #fff url(https://cdn1.iconfinder.com/data/icons/cc_mono_icon_set/blacks/16x16/calendar_2.png) 97% 50% no-repeat;
+    }
+
+    [type="date"]::-webkit-inner-spin-button {
+        display: none;
+    }
+
+    [type="date"]::-webkit-calendar-picker-indicator {
+        opacity: 0;
+    }
+
+    /* custom styles */
+    body {
+        font: 13px Verdana, sans-serif;
+    }
+
+    label {
+        display: block;
+    }
+
+    input {
+        border: 1px solid #c4c4c4;
+        background-color: #fff;
+        width: 95px;
+    }
+
+    .coc-block-row {
+        width: 100%;
+        /*display:table-row;*/
+    }
+
+    .coc-block {
+        display: table-cell;
+        vertical-align: middle;
+        padding-bottom: 3px;
+    }
+
+    .coc-block-label {
+        font-family: Verdana;
+        display: table-cell;
+        vertical-align: middle;
+        text-align: right;
+        padding-bottom: 3px;
+        padding-right: 5px;
+        font-weight: bold;
+        margin-bottom: 0;
+    }
+
+    .coc-input {
+        font-family: Calibri;
+        height: 20px;
+        font-size: 12px;
+        padding-left: 3px;
+        padding-right: 3px;
+        border: 1px solid #999;
+        /* variations */
+    }
+
+    .coc-form {
+        padding-top: 5px;
+        padding-left: 8px;
+    }
+</style>
+<script>
+    function selectedDate() {
+        const date = document.getElementById('date')
+        console.log(date.value)
+    }
+</script>

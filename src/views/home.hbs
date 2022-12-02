@@ -53,10 +53,11 @@
         <main class="p-6 sm:p-10 space-y-6">
             <div class="flex flex-col space-y-6 md:space-y-0 md:flex-row justify-between">
                 <div class="mr-6">
-                    <h1 class="text-4xl font-semibold mb-2">Dashboard</h1>
+                    <h1 class="text-4xl font-semibold mb-2">Dashboard - All amounts in {{currency}}</h1>
                 </div>
             </div>
             <section class="grid md:grid-cols-2 xl:grid-cols-4 gap-6">
+                {{#each recent}}
                 <div class="flex items-center p-8 bg-white shadow rounded-lg">
                     <div
                         class="inline-flex flex-shrink-0 items-center justify-center h-16 w-16 text-indigo-600 bg-indigo-100 rounded-full mr-6">
@@ -64,43 +65,11 @@
                             src="https://img.icons8.com/external-flaticons-flat-flat-icons/64/null/external-wallet-black-friday-cyber-monday-flaticons-flat-flat-icons.png" />
                     </div>
                     <div>
-                        <span class="block text-2xl font-bold">62</span>
-                        <span class="block text-gray-500">Students</span>
+                        <span class="block text-2xl font-bold">{{amount}}</span>
+                        <span class="block text-gray-500">{{category}}</span>
                     </div>
                 </div>
-                <div class="flex items-center p-8 bg-white shadow rounded-lg">
-                    <div
-                        class="inline-flex flex-shrink-0 items-center justify-center h-16 w-16 text-indigo-600 bg-indigo-100 rounded-full mr-6">
-                        <img
-                            src="https://img.icons8.com/external-flaticons-flat-flat-icons/64/null/external-wallet-black-friday-cyber-monday-flaticons-flat-flat-icons.png" />
-                    </div>
-                    <div>
-                        <span class="block text-2xl font-bold">62</span>
-                        <span class="block text-gray-500">Students</span>
-                    </div>
-                </div>
-                <div class="flex items-center p-8 bg-white shadow rounded-lg">
-                    <div
-                        class="inline-flex flex-shrink-0 items-center justify-center h-16 w-16 text-indigo-600 bg-indigo-100 rounded-full mr-6">
-                        <img
-                            src="https://img.icons8.com/external-flaticons-flat-flat-icons/64/null/external-wallet-black-friday-cyber-monday-flaticons-flat-flat-icons.png" />
-                    </div>
-                    <div>
-                        <span class="block text-2xl font-bold">62</span>
-                        <span class="block text-gray-500">Students</span>
-                    </div>
-                </div>
-                <div class="flex items-center p-8 bg-white shadow rounded-lg">
-                    <div
-                        class="inline-flex flex-shrink-0 items-center justify-center h-16 w-16 text-indigo-600 bg-indigo-100 rounded-full mr-6">
-                        <img
-                            src="https://img.icons8.com/external-flaticons-flat-flat-icons/64/null/external-wallet-black-friday-cyber-monday-flaticons-flat-flat-icons.png" />
-                    </div>
-                    <div>
-                        <span class="block text-2xl font-bold">62</span>
-                        <span class="block text-gray-500">Students</span>
-                    </div>
-                </div>
+                {{/each}}
 
 
             </section>
@@ -116,7 +85,7 @@
                 </div>
 
                 <div class="row-span-3 bg-white shadow rounded-lg">
-                    <form action="/add-wallet" method="post">
+                    <form action="/add-wallet" method="get">
                         <div class="flex items-center justify-between px-6 py-5 font-semibold border-b border-gray-100">
                             <span>Your Wallets</span>
                             <button>Add</button>

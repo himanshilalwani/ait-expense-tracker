@@ -12,6 +12,7 @@ import sgMail from '@sendgrid/mail';
 const app = express();
 const Wallet = mongoose.model('Wallets');
 const Budget = mongoose.model('Budgets');
+const Expense = mongoose.model('Expenses');
 const User = mongoose.model('Users');
 const Token = mongoose.model('Tokens');
 
@@ -195,7 +196,7 @@ app.post('/', (req, res) => {
     )
 })
 
-app.post('/add-wallet', (req, res) => {
+app.get('/add-wallet', (req, res) => {
     User.
         findOne({ _id: req.session.user._id }).
         populate('wallets').
@@ -208,8 +209,29 @@ app.post('/add-wallet', (req, res) => {
                 const filteredWallets = userWallets.map(wallet => {
                     return { 'name': wallet.name, 'amount': wallet.amount };
                 })
-                // console.log(filteredWallets);
-                res.render('add-wallet', { wallet: filteredWallets });
+
+                console.log(filteredWallets);
+                User.findOne({ _id: req.session.user._id }).
+                    populate('expenses').
+                    exec(function (err, expenses) {
+                        if (expenses) {
+                            const recent = expenses['expenses']['recent'];
+                            const recentMap = recent.map(
+                                (transaction) => {
+                                    const obj = {};
+                                    obj['category'] = Object.keys(transaction)[0]
+                                    obj['amount'] = Object.values(transaction)[0]
+                                    return obj;
+                                }
+                            )
+                            res.render('add-wallet', { wallet: filteredWallets, recent: recentMap, currency: req.session.user.currency });
+
+                        }
+                        else {
+                            res.render('add-wallet', { wallet: filteredWallets, currency: req.session.user.currency });
+
+                        }
+                    })
             }
         })
 }
@@ -252,30 +274,8 @@ app.post('/budget/add', (req, res) => {
 
 })
 
-// async function checkForExistingNames(userID, name) {
-//     User.findOne({ _id: userID }, function (err, user) {
-//         if (user) {
-//             for (const walletID of user.wallets) {
-//                 console.log(walletID);
-//                 Wallet.findOne({ _id: walletID }, function (err, wallet) {
-//                     if (wallet) {
-//                         if (wallet.name === req.body.name) {
-//                             console.log('returning true')
-//                             return true;
-//                         }
-//                     }
-//                 })
-//             }
-//         }
-//         console.log('returning false')
-//         return false;
-//     })
-// }
+
 app.post('/home', function (req, res) {
-    // const flag = await checkForExistingNames(req.session.user._id, req.body.name);
-    // console.log(flag);
-    // if (flag == false) {
-    // console.log('trying to save!!');
     User.findOne({ _id: req.session.user._id }, function (err, user) {
         if (user) {
             const newWallet = new Wallet({
@@ -284,7 +284,7 @@ app.post('/home', function (req, res) {
             });
             newWallet.save((err, savedWallet) => {
                 if (savedWallet) {
-                    console.log(savedWallet);
+                    // console.log(savedWallet);
                     user.wallets.push(savedWallet._id);
                     user.save((err, savedUser) => {
                         if (savedUser) {
@@ -293,7 +293,7 @@ app.post('/home', function (req, res) {
                         else {
                             console.log(err);
                             // window.alert('Some error occurred! Please try again!')
-                            res.redirect('/home');
+                            // res.redirect('/home');
 
                         }
                     })
@@ -311,6 +311,87 @@ app.post('/home', function (req, res) {
 
 })
 
+app.get('/expenses', (req, res) => {
+    res.render('expense')
+})
+
+app.get('/add-expense', (req, res) => {
+    res.render('add-expense')
+})
+
+app.post('/expenses', (req, res) => {
+    User.findOne({ _id: req.session.user._id }, function (err, user) {
+        if (user) {
+            if (user.expenses === undefined) {
+                const newExpense = new Expense({});
+                const obj1 = {};
+                obj1[req.body.category] = req.body.amount;
+                newExpense.recent.push(obj1);
+
+                const obj2 = {}
+                obj2[req.body['date-add']] = obj1;
+
+                newExpense.dailyExpenses.push(obj2);
+
+                newExpense.save((err, savedExpense) => {
+                    if (savedExpense) {
+                        user.expenses = savedExpense._id;
+                        user.save((err, savedUser) => {
+                            if (savedUser) {
+                                res.redirect('/expenses')
+                            }
+                            else {
+                                console.log(err);
+                                res.redirect('/expenses');
+                            }
+                        })
+
+                    }
+                    else {
+                        console.log(err)
+                        res.redirect('/home');
+                    }
+                })
+            }
+            else {
+                Expense.findOne({ _id: user.expenses }, (err, expense) => {
+                    if (expense) {
+
+
+                        if (expense.recent.length > 4) {
+                            expense.recent.pop();
+                        }
+                        const obj1 = {};
+                        obj1[req.body.category] = req.body.amount;
+                        expense.recent.unshift(obj1);
+                        expense.save((err, saved) => {
+                            if (saved) {
+                                const obj2 = {}
+                                obj2[req.body['date-add']] = obj1;
+
+                                expense.dailyExpenses.push(obj2);
+                                expense.save((err, saved) => {
+                                    if (err) {
+                                        console.log(err);
+                                        res.redirect('/expenses');
+                                    }
+                                    else {
+                                        res.redirect('/expenses');
+                                    }
+                                })
+
+                            }
+                        })
+                    }
+
+                });
+
+            }
+        }
+    })
+
+});
+
 app.get('/home', (req, res) => {
     User.
         findOne({ _id: req.session.user._id }).
@@ -325,7 +406,30 @@ app.get('/home', (req, res) => {
                     return { 'name': wallet.name, 'amount': wallet.amount };
                 })
                 // console.log(filteredWallets);
-                res.render('home', { wallet: filteredWallets });
+                User.findOne({ _id: req.session.user._id }).
+                    populate('expenses').
+                    exec(function (err, expenses) {
+
+                        if (expenses) {
+                            const recent = expenses['expenses']['recent'];
+                            const recentMap = recent.map(
+                                (transaction) => {
+                                    const obj = {};
+                                    obj['category'] = Object.keys(transaction)[0]
+                                    obj['amount'] = Object.values(transaction)[0]
+                                    return obj;
+                                }
+                            )
+                            res.render('home', { wallet: filteredWallets, recent: recentMap, currency: req.session.user.currency });
+
+                        }
+
+                        else {
+                            res.render('home', { wallet: filteredWallets, currency: req.session.user.currency });
+                        }
+
+                    })
+
             }
         })
 
@@ -344,7 +448,6 @@ app.get('/home', (req, res) => {
 
 
 app.get('/budgets', (req, res) => {
-    document.alert('OOPS')
     res.redirect('/home')
     // Budget.find({}).exec((err, budgets) => {
     //     if (budgets.length === 0) {
