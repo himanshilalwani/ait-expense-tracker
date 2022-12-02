@@ -214,7 +214,7 @@ app.get('/add-wallet', (req, res) => {
                 User.findOne({ _id: req.session.user._id }).
                     populate('expenses').
                     exec(function (err, expenses) {
-                        if (expenses) {
+                        if (expenses['expenses']) {
                             const recent = expenses['expenses']['recent'];
                             const recentMap = recent.map(
                                 (transaction) => {
@@ -293,7 +293,7 @@ app.post('/home', function (req, res) {
                         else {
                             console.log(err);
                             // window.alert('Some error occurred! Please try again!')
-                            // res.redirect('/home');
+                            res.redirect('/home');
 
                         }
                     })
@@ -356,41 +356,66 @@ app.post('/expenses', (req, res) => {
             else {
                 Expense.findOne({ _id: user.expenses }, (err, expense) => {
                     if (expense) {
-
-
-                        if (expense.recent.length > 4) {
-                            expense.recent.pop();
-                        }
-                        const obj1 = {};
-                        obj1[req.body.category] = req.body.amount;
-                        expense.recent.unshift(obj1);
-                        expense.save((err, saved) => {
-                            if (saved) {
-                                const obj2 = {}
-                                obj2[req.body['date-add']] = obj1;
-
-                                expense.dailyExpenses.push(obj2);
+                        if (expense.recent.length > 3) {
+                            const last = expense.recent.pop();
+                            expense.save((err, savedExp) => {
+                                const obj1 = {};
+                                obj1[req.body.category] = req.body.amount;
+                                expense.recent.unshift(obj1);
                                 expense.save((err, saved) => {
-                                    if (err) {
-                                        console.log(err);
-                                        res.redirect('/expenses');
-                                    }
-                                    else {
-                                        res.redirect('/expenses');
+                                    if (saved) {
+                                        const obj2 = {}
+                                        obj2[req.body['date-add']] = obj1;
+
+                                        expense.dailyExpenses.push(obj2);
+                                        expense.save((err, saved) => {
+                                            if (err) {
+                                                console.log(err);
+                                                res.redirect('/expenses');
+                                            }
+                                            else {
+                                                res.redirect('/expenses');
+                                            }
+                                        })
+
                                     }
                                 })
+                            })
+                        }
+                        else {
+                            const obj1 = {};
+                            obj1[req.body.category] = req.body.amount;
+                            expense.recent.unshift(obj1);
+                            expense.save((err, saved) => {
+                                if (saved) {
+                                    const obj2 = {}
+                                    obj2[req.body['date-add']] = obj1;
 
-                            }
-                        })
-                    }
+                                    expense.dailyExpenses.push(obj2);
+                                    expense.save((err, saved) => {
+                                        if (err) {
+                                            console.log(err);
+                                            res.redirect('/expenses');
+                                        }
+                                        else {
+                                            res.redirect('/expenses');
+                                        }
+                                    })
+                                }
 
-                });
+                            })
 
+                        }
+                    };
+
+                }
+                )
             }
         }
-    })
-
-});
+    }
+    )
+}
+);
 
 app.get('/home', (req, res) => {
     User.
@@ -410,7 +435,8 @@ app.get('/home', (req, res) => {
                     populate('expenses').
                     exec(function (err, expenses) {
 
-                        if (expenses) {
+                        if (expenses['expenses']) {
+
                             const recent = expenses['expenses']['recent'];
                             const recentMap = recent.map(
                                 (transaction) => {
@@ -420,12 +446,113 @@ app.get('/home', (req, res) => {
                                     return obj;
                                 }
                             )
-                            res.render('home', { wallet: filteredWallets, recent: recentMap, currency: req.session.user.currency });
 
+                            const de = expenses['expenses']['dailyExpenses'];
+
+                            const jan = de
+                                .filter(obj => Object.keys(obj)[0].slice(5, 7) == '01')
+                                .map(obj => Object.values(obj)[0])
+                                .map(obj => Object.values(obj)[0])
+                                .reduce((accumulator, value) => {
+                                    return accumulator + parseInt(value);
+                                }, 0);
+
+                            const feb = de
+                                .filter(obj => Object.keys(obj)[0].slice(5, 7) == '02')
+                                .map(obj => Object.values(obj)[0])
+                                .map(obj => Object.values(obj)[0])
+                                .reduce((accumulator, value) => {
+                                    return accumulator + parseInt(value);
+                                }, 0);
+
+                            const march = de
+                                .filter(obj => Object.keys(obj)[0].slice(5, 7) == '03')
+                                .map(obj => Object.values(obj)[0])
+                                .map(obj => Object.values(obj)[0])
+                                .reduce((accumulator, value) => {
+                                    return accumulator + parseInt(value);
+                                }, 0);
+
+                            const april = de
+                                .filter(obj => Object.keys(obj)[0].slice(5, 7) == '04')
+                                .map(obj => Object.values(obj)[0])
+                                .map(obj => Object.values(obj)[0])
+                                .reduce((accumulator, value) => {
+                                    return accumulator + parseInt(value);
+                                }, 0);
+
+                            const may = de
+                                .filter(obj => Object.keys(obj)[0].slice(5, 7) == '05')
+                                .map(obj => Object.values(obj)[0])
+                                .map(obj => Object.values(obj)[0])
+                                .reduce((accumulator, value) => {
+                                    return accumulator + parseInt(value);
+                                }, 0);
+
+                            const june = de
+                                .filter(obj => Object.keys(obj)[0].slice(5, 7) == '06')
+                                .map(obj => Object.values(obj)[0])
+                                .map(obj => Object.values(obj)[0])
+                                .reduce((accumulator, value) => {
+                                    return accumulator + parseInt(value);
+                                }, 0);
+
+                            const july = de
+                                .filter(obj => Object.keys(obj)[0].slice(5, 7) == '07')
+                                .map(obj => Object.values(obj)[0])
+                                .map(obj => Object.values(obj)[0])
+                                .reduce((accumulator, value) => {
+                                    return accumulator + parseInt(value);
+                                }, 0);
+
+                            const aug = de
+                                .filter(obj => Object.keys(obj)[0].slice(5, 7) == '08')
+                                .map(obj => Object.values(obj)[0])
+                                .map(obj => Object.values(obj)[0])
+                                .reduce((accumulator, value) => {
+                                    return accumulator + parseInt(value);
+                                }, 0);
+
+                            const sept = de
+                                .filter(obj => Object.keys(obj)[0].slice(5, 7) == '09')
+                                .map(obj => Object.values(obj)[0])
+                                .map(obj => Object.values(obj)[0])
+                                .reduce((accumulator, value) => {
+                                    return accumulator + parseInt(value);
+                                }, 0);
+
+                            const oct = de
+                                .filter(obj => Object.keys(obj)[0].slice(5, 7) == '10')
+                                .map(obj => Object.values(obj)[0])
+                                .map(obj => Object.values(obj)[0])
+                                .reduce((accumulator, value) => {
+                                    return accumulator + parseInt(value);
+                                }, 0);
+
+                            const nov = de
+                                .filter(obj => Object.keys(obj)[0].slice(5, 7) == '11')
+                                .map(obj => Object.values(obj)[0])
+                                .map(obj => Object.values(obj)[0])
+                                .reduce((accumulator, value) => {
+                                    return accumulator + parseInt(value);
+                                }, 0);
+
+                            const dec = de
+                                .filter(obj => Object.keys(obj)[0].slice(5, 7) == '12')
+                                .map(obj => Object.values(obj)[0])
+                                .map(obj => Object.values(obj)[0])
+                                .reduce((accumulator, value) => {
+                                    return accumulator + parseInt(value);
+                                }, 0);
+
+                            const sumArray = [jan, feb, march, april, may, june, july, aug, sept, oct, nov, dec];
+                            // console.log(dec)
+                            // console.log("arr: ", sumArray);
+                            res.render('home', { wallet: filteredWallets, recent: recentMap, currency: req.session.user.currency, sumArray: sumArray });
                         }
 
                         else {
-                            res.render('home', { wallet: filteredWallets, currency: req.session.user.currency });
+                            res.render('home', { wallet: filteredWallets, currency: req.session.user.currency, sumArray: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] });
                         }
 
                     })
@@ -433,8 +560,8 @@ app.get('/home', (req, res) => {
             }
         })
 
-
-})
+}
+)
 
 
 // Wallet.find({}).exec((err, wallets) => {
