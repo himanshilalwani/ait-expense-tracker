@@ -8,6 +8,7 @@ import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 import * as auth from './auth.mjs';
 import sgMail from '@sendgrid/mail';
+import hbs from 'hbs';
 
 const app = express();
 const Wallet = mongoose.model('Wallets');
@@ -17,6 +18,9 @@ const User = mongoose.model('Users');
 const Token = mongoose.model('Tokens');
 
 app.set('view engine', 'hbs');
+hbs.registerHelper('json', function (content) {
+    return JSON.stringify(content);
+});
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -34,6 +38,8 @@ app.use(session({
 app.use(auth.authRequired(['/add-wallet']));
 app.use(auth.authRequired(['/budget/add']));
 app.use(auth.authRequired(['/home']));
+app.use(auth.authRequired(['/expenses']));
+app.use(auth.authRequired(['/add-expense']));
 
 // make {{user}} variable available for all paths
 app.use((req, res, next) => {
@@ -319,7 +325,7 @@ app.get('/add-expense', (req, res) => {
     res.render('add-expense')
 })
 
-app.post('/expenses', (req, res) => {
+app.post('/add-expense', (req, res) => {
     User.findOne({ _id: req.session.user._id }, function (err, user) {
         if (user) {
             if (user.expenses === undefined) {
@@ -563,6 +569,38 @@ app.get('/home', (req, res) => {
 }
 )
 
+app.post('/expenses', (req, res) => {
+    User.findOne({ _id: req.session.user._id })
+        .populate('expenses')
+        .exec(function (err, expenses) {
+            if (expenses['expenses']) {
+                const de = expenses['expenses']['dailyExpenses'];
+                const filteredDates = de
+                    .filter(obj => Object.keys(obj)[0] == req.body.date)
+                    .map(obj => Object.values(obj)[0])
+                if (filteredDates.length != 0) {
+                    const filteredMap = filteredDates.map(
+                        (transaction) => {
+                            const obj = {};
+                            obj['category'] = Object.keys(transaction)[0]
+                            obj['amount'] = Object.values(transaction)[0]
+                            return obj;
+                        }
+                    )
+
+                    res.render('expense', { exp: filteredMap, dt: req.body.date, exp2: JSON.stringify(filteredMap) });
+
+                }
+                else {
+                    res.render('expense', { message: 'You do not have any expenses tracked for the selected date.', dt: req.body.date })
+                }
+
+            }
+            else {
+                res.render('expense', { message: 'You do not have any expenses tracked for the selected date.', dt: req.body.date })
+            }
+        })
+})
 
 // Wallet.find({}).exec((err, wallets) => {
 //     if (wallets.length === 0) {
