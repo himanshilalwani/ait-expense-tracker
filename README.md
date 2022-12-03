@@ -82,7 +82,7 @@ An Example Token:
 
 / - login page
 
-![list create](documentation/public.png)
+![list create](documentation//%3A.png)
 
 /sign-up - sign up page for new users
 
@@ -94,18 +94,23 @@ An Example Token:
 
 /add-wallet - page to allow users to add a wallet
 
+![list](documentation//%3Aadd-wallet.png)
+
 /budgets - budgets page to create a budget and track expenses for that budget
 
-![list](documentation/budget.png)
+![list](documentation//%3Abudgets.png)
 
 /add-budget - page to allow users to add a budget
 
+![list](documentation//%3Aadd-budget.png)
+
 /expenses - expenses page to check expenses for a day and see the visualization
 
-![list](documentation/expenses.png)
+![list](documentation//%3Aexpenses.png)
 
 /add-expense - page to allow users to add an expense
 
+![list](documentation//%3Aadd-expense.png)
 
 ## Site map
 
