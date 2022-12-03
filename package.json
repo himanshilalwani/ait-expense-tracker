@@ -38,6 +38,7 @@
     "nodemailer-sendgrid": "^1.0.3",
     "nodemailer-sendgrid-transport": "^0.2.0",
     "pg": "^8.8.0",
+    "rebuild": "^0.1.2",
     "sequelize": "^6.26.0"
   },
   "devDependencies": {
