@@ -9,7 +9,8 @@ import crypto from 'crypto';
 import * as auth from './auth.mjs';
 import sgMail from '@sendgrid/mail';
 import hbs from 'hbs';
-import exp from 'constants';
+import * as dotenv from 'dotenv' // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
+dotenv.config()
 
 const app = express();
 const Wallet = mongoose.model('Wallets');
@@ -57,7 +58,6 @@ app.get('/sign-up', (req, res) => {
 })
 
 app.post('/sign-up', (req, res) => {
-    // console.log(req.body);
     User.findOne({ email: req.body.email }, (err, user) => {
         if (err) {
             return res.status(500).send({ msg: err.message });
@@ -95,9 +95,9 @@ app.post('/sign-up', (req, res) => {
                         return res.status(500).send({ msg: err.message })
                     }
 
-                    sgMail.setApiKey("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");
+                    sgMail.setApiKey(process.env.SENDGRID_API);
                     const mailOptions = {
-                        from: 'moneylover.ait@gmail.com',
+                        from: process.env.SENDGRID_EMAIL,
                         to: newUser.email,
                         subject: 'Account Verification Link',
                         text: 'Hello' + ',\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/confirmation\/' + newUser.email + '\/' + newToken.token + '\n\nThank You!\n'
@@ -107,13 +107,10 @@ app.post('/sign-up', (req, res) => {
                         .send(mailOptions)
                         .then(() => {
                             const successMsg = 'A verification email has been sent to ' + newUser.email + '. It will expire after 24 hours. Make sure to check your spam folder as well.'
-                            // return res.status(200).send('A verification email has been sent to ' + newUser.email + '. It will be expire after one day. If you have not got the verification Email, check your spam folder or click on resend token.');
+
                             res.render('signup', { 'success': successMsg });
                         }, err => {
-                            // console.error(err);
-                            // if (err.response) {
-                            //     console.error(err.response.body);
-                            // }
+
                             res.render('signup', { 'failure': 'There was some issue sending the verification email. Please try again later.' })
                         });
                 })
@@ -275,7 +272,6 @@ app.post('/add-budget', (req, res) => {
                         }
                         else {
                             console.log(err);
-                            // window.alert('Some error occurred! Please try again!')
                             res.redirect('/budgets');
 
                         }
@@ -298,11 +294,8 @@ app.post('/budgets', function (req, res) {
         .exec(function (err, budget) {
             if (budget) {
                 const budgets = budget['budget'];
-                // console.log("budgets: ", budgets)
                 const budgetNames = budgets.map(b => b.name);
-                // console.log(req.body.budget);
                 const filteredBudget = budgets.filter(b => b.name == req.body.budget)[0];
-                // console.log("FB", filteredBudget)
                 User.findOne({ _id: req.session.user._id })
                     .populate('expenses')
                     .exec(function (err, user) {
@@ -317,8 +310,6 @@ app.post('/budgets', function (req, res) {
                                     return obj;
                                 }
                             )
-                            console.log("FE: ", filteredExpenses)
-                            console.log("FB", filteredBudget)
                             res.render('budgets', { currency: req.session.user.currency, names: budgetNames, bN: req.body.budget, bC: filteredBudget['categories'], expC: filteredExpenses });
 
                         }
@@ -344,7 +335,6 @@ app.post('/home', function (req, res) {
                         }
                         else {
                             console.log(err);
-                            // window.alert('Some error occurred! Please try again!')
                             res.redirect('/home');
 
                         }
@@ -358,9 +348,6 @@ app.post('/home', function (req, res) {
             })
         }
     })
-
-
-
 })
 
 app.get('/expenses', (req, res) => {
@@ -381,7 +368,6 @@ app.get('/add-expense', (req, res) => {
                 }
             }
         })
-
 })
 
 app.post('/add-expense', (req, res) => {
