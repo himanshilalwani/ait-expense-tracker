@@ -21,9 +21,10 @@ An Example User:
 ```javascript
 {
   email: "moneylover@xyz.com",
-  hash: // a password hash,
+  password: // a password hash,
+  isVerified: bool,
   currency: "$",
-  budget: 1, // reference to a budget object
+  budget: [1], // reference to a budget object
   expenses: 25, // reference to an expense object
   wallets: [10] // reference to a wallet object
 }
@@ -34,9 +35,8 @@ An Example Budget:
 ```javascript
 {
   _id: 1,
-  budgets: [{ budgetName: "Thanksgiving Trip", 
-  setCategories: { transport: "100", food: "200", accommodation: "300"} 
-  }]
+  name: "Thanksgiving Trip", 
+  categories: { transport: "100", food: "200", accommodation: "300"} 
 }
 ```
 An Example List of Expenses:
@@ -46,11 +46,11 @@ An Example List of Expenses:
   _id: 25,
   recent: { transport: 20, food: 10 }
   dailyExpenses: [
-    { date: , spent: {}}
+    { '2022-12-01': {transport: 20, food: 10}}
   ]
   budgetExpenses: [
-    { budgetName: "Default", spent: { transport: "200", food: "500", accommodation: "150", education: "100", groceries: "50" } }, // default to track overall expenses 
-    { budgetName: "Thanksgiving Trip", spent: { transport: "50", food: "30", accommodation: "90"} }
+    {  "Default": { transport: "200" }}, 
+    { "Thanksgiving Trip": { transport: "50" } }
   ]  
 }
 
@@ -60,7 +60,18 @@ An Example Wallet:
 ```javascript
 {
   id: 10,
-  cash: "600"
+  name: 'cash'
+  amount: "600"
+}
+```
+An Example Token:
+
+```javascript
+{
+  id: 10,
+  userID: 1, // reference to the user object
+  token: "randomToken123",
+  expiresAt: // expiry time
 }
 ```
 
@@ -69,15 +80,11 @@ An Example Wallet:
 
 ## Wireframes
 
-/ - web app home page / public page
+/ - login page
 
 ![list create](documentation/public.png)
 
-/login - login page for existing users
-
-![list](documentation/login.png)
-
-/signup - sign up page for new users
+/sign-up - sign up page for new users
 
 ![list](documentation/sign-up.png)
 
@@ -85,13 +92,19 @@ An Example Wallet:
 
 ![list](documentation/home.png)
 
-/budget - budgets page to create a budget and track expenses for that budget
+/add-wallet - page to allow users to add a wallet
+
+/budgets - budgets page to create a budget and track expenses for that budget
 
 ![list](documentation/budget.png)
+
+/add-budget - page to allow users to add a budget
 
 /expenses - expenses page to check expenses for a day and see the visualization
 
 ![list](documentation/expenses.png)
+
+/add-expense - page to allow users to add an expense
 
 
 ## Site map
@@ -127,7 +140,9 @@ An Example Wallet:
 
 ## Annotations / References Used
 
-1. [tutorial on mocha](https://www.geeksforgeeks.org/how-to-use-mocha-with-mongoose/)
+1. [tutorial on chart.js](https://www.chartjs.org/docs/latest/charts/line.html)
 2. [tutorial on tailwind](https://tailwindcss.com/docs/installation)
 3. [tutorial on sending verification email](https://slgupta022.medium.com/email-verification-using-sendgrid-in-node-js-express-js-mongodb-c5803f643e09)
-
+4. [config management](https://www.npmjs.com/package/dotenv)
+5. [icons](https://icons8.com/)
+6. [date picker on expenses page](https://codepen.io/maheshambure21/pen/VYJQYG)
