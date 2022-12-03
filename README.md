@@ -115,9 +115,10 @@ An Example Wallet:
     * Send a verification email to user on signing up
 * (2 points) CSS Framework
     * I will use tailwind or bootstrap
-* (2 points) Unit Testing
-    * I will use Mocha for unit testing of features such as login.
-* (2 points) Perform client side form validation using custom JavaScript
+* (2 points) Chart JS
+    * I used chart JS to create two charts (line & doughnut).
+* (2 points) Config Management
+    * Stored the API keys & email in the .env file.
 
 11 points total out of 10 required points
 
