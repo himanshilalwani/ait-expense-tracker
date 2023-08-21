@@ -2,7 +2,7 @@
 
 ## Overview
 
-Having to track your expenses on a regular basis is indeed a very boring task. However, the mundanity associated with it cannot overpower its siignificance.
+Having to track your expenses on a regular basis is indeed a very boring task. However, the mundanity associated with it cannot overpower its significance.
 
 Money Tracker is a web app that helps you stay involved with your finances. It lets you create different budgets, log expenses in different categories, get a monthly spending report, amongst other useful features.
 
